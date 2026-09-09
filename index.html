@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr" class="light-mode">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soteria Car - Location de Voitures au Maroc</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f5f3ff', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 950: '#2e1065' }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Outfit:wght@400;600;700;900&display=swap');
+        body { font-family: 'Outfit', 'Cairo', sans-serif; transition: background 0.3s ease, color 0.3s ease; }
+        .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(0, 0, 0, 0.08); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        body:not(.light-mode) .glass-card { background: rgba(22, 22, 28, 0.85); border: 1px solid rgba(255, 255, 255, 0.12); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+        body.light-mode { background-color: #f8fafc; color: #0f172a; }
+        body:not(.light-mode) { background-color: #09090b; color: #f3f4f6; }
+        .slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1s ease-in-out; background-size: cover; background-position: center; }
+        .slide.active { opacity: 1; }
+        .btn-modern-primary { background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%); transition: all 0.3s ease; }
+        .btn-modern-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-purple-500 selection:text-white light-mode">
+
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-50 glass-card border-b px-4 lg:px-12 py-3.5 flex items-center justify-between backdrop-blur-md">
+        <div class="flex items-center gap-3">
+            <div>
+                <h1 class="font-black text-xl tracking-wider bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-300 bg-clip-text text-transparent">SOTERIA CAR</h1>
+                <p id="logo-sub" class="text-[10px] text-gray-500 dark:text-gray-400 font-semibold tracking-widest uppercase">Location de voitures</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2.5">
+            <button onclick="toggleTheme()" class="w-10 h-10 rounded-xl glass-card flex items-center justify-center text-gray-700 dark:text-gray-200 hover:text-purple-600 dark:hover:text-white transition shadow-sm" title="Changer le thème">
+                <i id="theme-icon" class="fa-solid fa-sun text-sm"></i>
+            </button>
+            <button id="langToggleBtn" onclick="toggleLanguage()" class="px-3.5 h-10 rounded-xl glass-card text-xs font-bold text-purple-600 dark:text-purple-400 hover:text-purple-800 transition border border-purple-500/30">
+                AR
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section with Background Slider -->
+    <section class="relative h-[420px] lg:h-[480px] overflow-hidden flex items-center justify-center text-center px-4">
+        <div class="absolute inset-0 z-0">
+            <div class="slide active" style="background-image: linear-gradient(to bottom, rgba(9,9,11,0.5), rgba(9,9,11,0.85)), url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1920&q=85');"></div>
+            <div class="slide" style="background-image: linear-gradient(to bottom, rgba(9,9,11,0.5), rgba(9,9,11,0.85)), url('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1920&q=85');"></div>
+            <div class="slide" style="background-image: linear-gradient(to bottom, rgba(9,9,11,0.5), rgba(9,9,11,0.85)), url('https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1920&q=85');"></div>
+        </div>
+
+        <div class="relative z-10 max-w-2xl mx-auto space-y-4">
+            <span class="px-4 py-1.5 rounded-full bg-purple-500/20 border border-purple-500/40 text-purple-200 text-xs font-bold backdrop-blur-md inline-block shadow-lg">
+                <i class="fa-solid fa-bolt ml-1 text-yellow-400"></i> Soteria Car Kénitra
+            </span>
+            <h2 id="dynamic-text" class="text-2xl lg:text-4xl font-black tracking-tight text-white min-h-[70px] drop-shadow-md transition-opacity duration-300">
+                Voyagez en toute liberté avec Soteria Car
+            </h2>
+            <p id="hero-desc" class="text-xs lg:text-sm text-gray-200 font-medium leading-relaxed max-w-lg mx-auto">
+                Découvrez notre flotte de véhicules récents, confortables et entretenus pour tous vos deplacements à des prix imbattables.
+            </p>
+            <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+                <a href="#fleet-section" id="btn-fleet" class="btn-modern-primary text-white px-6 py-3 rounded-xl text-xs font-bold shadow-lg flex items-center">
+                    <i class="fa-solid fa-car ml-2"></i> Voir les Voitures
+                </a>
+                <a href="https://wa.me/212661679702" target="_blank" id="btn-contact" class="glass-card text-gray-900 dark:text-white hover:bg-white/10 px-6 py-3 rounded-xl text-xs font-bold transition flex items-center border border-white/20">
+                    <i class="fa-solid fa-headset ml-2 text-purple-600 dark:text-purple-400"></i> Contactez-nous
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fleet Section -->
+    <main id="fleet-section" class="max-w-7xl mx-auto px-4 lg:px-12 py-12 flex-grow w-full space-y-8">
+        <div class="text-center space-y-2">
+            <span id="fleet-badge" class="text-[11px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-widest bg-purple-500/10 px-3 py-1 rounded-lg">Catalogue & Offres</span>
+            <h3 class="text-2xl lg:text-3xl font-black text-gray-900 dark:text-white"><span id="fleet-title-1">Notre</span> <span id="fleet-title-2" class="text-purple-600 dark:text-purple-400">Flotte de Véhicules</span></h3>
+            <p id="fleet-desc" class="text-xs text-gray-600 dark:text-gray-300 max-w-md mx-auto">Choisissez le véhicule qui s'adapte parfaitement à vos besoins et profitez d'un confort absolu.</p>
+        </div>
+
+        <div id="fleet-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </main>
+
+    <!-- Google Maps Reviews Section -->
+    <section class="max-w-7xl mx-auto px-4 lg:px-12 py-10 w-full space-y-6">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4 glass-card p-6 rounded-3xl border border-purple-500/20 shadow-xl">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center text-white text-2xl shadow-lg">
+                    <i class="fa-brands fa-google"></i>
+                </div>
+                <div>
+                    <h4 id="google-title" class="font-black text-base lg:text-lg text-gray-900 dark:text-white">Google Maps Avis</h4>
+                    <div class="flex items-center gap-1.5 text-amber-500 text-sm mt-0.5">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        <span class="text-xs font-bold text-gray-800 dark:text-gray-200 ml-1">5.0 / 5.0</span>
+                    </div>
+                </div>
+            </div>
+            <a href="https://maps.app.goo.gl/PiGmLhK2dyF15hmB8" target="_blank" id="google-btn" class="px-5 py-2.5 rounded-xl bg-purple-600/10 hover:bg-purple-600 hover:text-white text-purple-600 dark:text-purple-300 text-xs font-bold transition border border-purple-500/30">
+                <i class="fa-solid fa-arrow-up-right-from-square ml-1.5"></i> Voir tous les avis sur Google
+            </a>
+        </div>
+
+        <div id="reviews-container" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+    </section>
+
+    <!-- Footer with Sleek Modern Style -->
+    <footer class="glass-card border-t border-gray-200 dark:border-white/10 py-12 px-6 mt-16 text-xs text-gray-700 dark:text-gray-300 space-y-8">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Horaires -->
+            <div class="glass-card p-5 rounded-2xl border border-purple-500/20 space-y-2 shadow-sm flex items-start gap-3.5">
+                <div class="w-10 h-10 rounded-xl bg-purple-600/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-base shrink-0">
+                    <i class="fa-regular fa-clock"></i>
+                </div>
+                <div>
+                    <h4 id="hours-title" class="font-bold text-gray-900 dark:text-white text-sm">Horaires d'ouverture</h4>
+                    <p id="open-status" class="text-gray-600 dark:text-gray-300 text-xs mt-0.5">Ouvert 9:00 • Fermé à 21:00</p>
+                </div>
+            </div>
+            <!-- Adresse -->
+            <div class="glass-card p-5 rounded-2xl border border-purple-500/20 space-y-2 shadow-sm flex items-start gap-3.5">
+                <div class="w-10 h-10 rounded-xl bg-purple-600/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-base shrink-0">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+                <div>
+                    <h4 id="addr-title" class="font-bold text-gray-900 dark:text-white text-sm">Adresse de l'Agence</h4>
+                    <p class="text-gray-600 dark:text-gray-300 text-xs mt-0.5">Avenue Mohammed V, Kénitra, Maroc</p>
+                </div>
+            </div>
+            <!-- Téléphone -->
+            <div class="glass-card p-5 rounded-2xl border border-purple-500/20 space-y-2 shadow-sm flex items-start gap-3.5">
+                <div class="w-10 h-10 rounded-xl bg-purple-600/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-base shrink-0">
+                    <i class="fa-solid fa-phone"></i>
+                </div>
+                <div>
+                    <h4 id="phone-title" class="font-bold text-gray-900 dark:text-white text-sm">Téléphone / WhatsApp</h4>
+                    <p class="text-purple-600 dark:text-purple-400 font-bold text-xs mt-0.5">+212 661-679702</p>
+                </div>
+            </div>
+            <!-- Support 24/7 -->
+            <div class="glass-card p-5 rounded-2xl border border-purple-500/20 space-y-2 shadow-sm flex items-start gap-3.5">
+                <div class="w-10 h-10 rounded-xl bg-purple-600/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-base shrink-0">
+                    <i class="fa-solid fa-headset"></i>
+                </div>
+                <div>
+                    <h4 id="support-title" class="font-bold text-gray-900 dark:text-white text-sm">Support 24/7</h4>
+                    <p id="support-status" class="text-gray-600 dark:text-gray-300 text-xs mt-0.5">تواصل على مدار 24/7</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="pt-6 border-t border-gray-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 max-w-7xl mx-auto">
+            <p id="footer-text" class="text-gray-600 dark:text-gray-300">© 2026 Soteria Car. Tous droits réservés.</p>
+            <button onclick="openLoginModal()" id="admin-footer-btn" class="text-xs text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition font-semibold underline underline-offset-4">
+                Administration
+            </button>
+        </div>
+    </footer>
+
+    <!-- Booking Modal (نافذة الحجز) -->
+    <div id="booking-modal" class="fixed inset-0 z-50 bg-black/85 hidden flex items-center justify-center p-4 overflow-y-auto backdrop-blur-sm">
+        <div class="glass-card max-w-lg w-full p-6 rounded-3xl space-y-5 my-8 relative shadow-2xl border border-purple-500/30">
+            <div class="flex justify-between items-center border-b border-gray-200 dark:border-white/10 pb-3">
+                <h3 id="booking-modal-title" class="font-black text-base text-purple-600 dark:text-purple-400 flex items-center gap-2">
+                    <i class="fa-solid fa-car-side"></i> حجز سيارة جديدة
+                </h3>
+                <button onclick="closeBookingModal()" class="text-gray-500 hover:text-gray-900 dark:hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="booking-form" onsubmit="submitBooking(event)" class="space-y-3.5">
+                <input type="hidden" id="book-car-name">
+                <input type="hidden" id="book-car-price-base">
+                <input type="hidden" id="book-car-tiers">
+
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-700 dark:text-gray-200 mb-1">نوع السيارة المتاحة</label>
+                    <input type="text" id="book-car-display" disabled class="w-full bg-gray-100 dark:bg-black/60 border border-gray-300 dark:border-white/10 rounded-xl px-3.5 py-2 text-xs font-bold text-purple-600 dark:text-purple-300">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-700 dark:text-gray-200 mb-1">الإسم الكامل *</label>
+                        <input type="text" id="book-fullname" required placeholder="أدخل اسمك الكامل" class="w-full bg-white dark:bg-black/40 border border-gray-300 dark:border-white/10 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-purple-500 text-gray-900 dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-700 dark:text-gray-200 mb-1">رقم الهاتف *</label>
+                        <input type="tel" id="book-phone" required placeholder="06XXXXXXXX" class="w-full bg-white dark:bg-black/40 border border-gray-300 dark:border-white/10 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-purple-500 text-gray-900 dark:text-white">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-700 dark:text-gray-200 mb-1">تاريخ الإستلام *</label>
+                        <input type="date" id="book-start-date" required onchange="calculateTotal()" class="w-full bg-white dark:bg-black/40 border border-gray-300 dark:border-white/10 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-purple-500 text-gray-900 dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-gray-700 dark:text-gray-200 mb-1">تاريخ الرجوع *</label>
+                        <input type="date" id="book-end-date" required onchange="calculateTotal()" class="w-full bg-white dark:bg-black/40 border border-gray-300 dark:border-white/10 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-purple-500 text-gray-900 dark:text-white">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-700 dark:text-gray-200 mb-1">مكان الإستلام *</label>
+                    <select id="book-location" class="w-full bg-white dark:bg-black/40 border border-gray-300 dark:border-white/10 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-purple-500 text-gray-900 dark:text-white">
+                        <option value="الوكالة (Agence)" class="dark:bg-zinc-900">الوكالة (Agence)</option>
+                        <option value="محطة القطار (Gare ONCF)" class="dark:bg-zinc-900">محطة القطار (Gare)</option>
+                        <option value="المطار (Aéroport)" class="dark:bg-zinc-900">المطار / محطة الطائرة (Aéroport)</option>
+                    </select>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-between">
+                    <div>
+                        <span class="text-[11px] text-gray-600 dark:text-gray-300 font-semibold block">مدة الحجز والثمن الإجمالي:</span>
+                        <span id="book-duration-text" class="text-xs font-bold text-purple-700 dark:text-purple-300">يوم واحد</span>
+                    </div>
+                    <div class="text-left">
+                        <span id="book-total-price" class="text-lg font-black text-purple-600 dark:text-purple-400">0 MAD</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full btn-modern-primary text-white font-bold py-3 rounded-xl text-xs shadow-lg flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-base"></i> تأكيد الحجز وإرسال عبر الواتساب
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Green Notification Popup -->
+    <div id="success-toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 hidden bg-emerald-600 text-white px-6 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-emerald-400 animate-bounce">
+        <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-base">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <div>
+            <h5 class="font-black text-sm">لقد تم الحجز بنجاح!</h5>
+            <p class="text-[11px] text-emerald-100">تم تحويل طلبك وإرسال تفاصيله عبر الواتساب بنجاح.</p>
+        </div>
+    </div>
+
+    <!-- Image High-Res Modal -->
+    <div id="image-modal" class="fixed inset-0 z-50 bg-black/90 hidden flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="relative max-w-4xl w-full max-h-[90vh] flex flex-col items-center">
+            <button onclick="closeImageModal()" class="absolute -top-12 right-0 text-white hover:text-purple-400 text-2xl font-bold bg-white/10 w-10 h-10 rounded-full flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+            <img id="modal-img-element" src="" class="max-h-[75vh] w-auto object-contain rounded-2xl shadow-2xl border border-white/20">
+            <p id="modal-img-title" class="text-white font-bold text-sm mt-4 text-center"></p>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed inset-0 z-50 bg-black/85 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="glass-card max-w-sm w-full p-6 rounded-3xl space-y-4 relative shadow-2xl border border-white/10">
+            <div class="flex justify-between items-center">
+                <h3 id="admin-login-title" class="font-bold text-base text-gray-900 dark:text-white"><i class="fa-solid fa-lock text-purple-600 dark:text-purple-500 ml-2"></i> Administration</h3>
+                <button onclick="closeLoginModal()" class="text-gray-500 hover:text-gray-900 dark:hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-3">
+                <input type="text" id="admin-user" placeholder="Nom d'utilisateur (admin)" class="w-full bg-white dark:bg-black/40 border border-gray-300 dark:border-white/10 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-purple-500 text-gray-900 dark:text-white">
+                <input type="password" id="admin-pass" placeholder="Mot de passe (123)" class="w-full bg-white dark:bg-black/40 border border-gray-300 dark:border-white/10 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-purple-500 text-gray-900 dark:text-white">
+                <button onclick="checkAdminLogin()" id="admin-login-btn" class="w-full btn-modern-primary text-white font-bold py-2.5 rounded-xl text-xs shadow-lg">Connexion</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div id="admin-modal" class="fixed inset-0 z-50 bg-black/85 hidden flex items-center justify-center p-4 overflow-y-auto backdrop-blur-sm">
+        <div class="glass-card max-w-2xl w-full p-6 rounded-3xl space-y-6 my-8 relative shadow-2xl border border-white/10 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-gray-200 dark:border-white/10 pb-4">
+                <h3 id="admin-modal-title" class="font-bold text-lg text-purple-600 dark:text-purple-400">لوحة تحكم الإدارة</h3>
+                <button onclick="toggleAdminModal()" class="text-gray-500 hover:text-gray-900 dark:hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="add-car-form" onsubmit="saveCarToFirebase(event)" class="space-y-4">
+                <input type="hidden" id="editing-car-id">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-gray-700 dark:text-gray-200 mb-1">اسم السيارة / الموديل</label>
+                        <input type="text" id="car-name" required placeholder="مثلاً: Dacia Logan" class="w-full bg-white dark:bg-black/40 border border-gray-300 dark:border-white/10 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-purple-500 text-gray-900 dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-gray-700 dark:text-gray-200 mb-1">ثمن اليوم الواحد (مثلاً: 350 MAD)</label>
+                        <input type="text" id="car-price-1day" required placeholder="350 MAD" class="w-full bg-white dark:bg-black/40 border border-gray-300 dark:border-white/10 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-purple-500 text-gray-900 dark:text-white">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-gray-700 dark:text-gray-200 mb-1">الحالة</label>
+                        <select id="car-status" class="w-full bg-white dark:bg-black/40 border border-gray-300 dark:border-white/10 rounded-xl px-3.5 py-2 text-xs outline-none focus:border-purple-500 text-gray-900 dark:text-white">
+                            <option value="available" class="dark:bg-zinc-900">متوفرة (Disponible)</option>
+                            <option value="reserved" class="dark:bg-zinc-900">محجوزة (Réservé)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-gray-700 dark:text-gray-200 mb-1">صورة السيارة</label>
+                        <input type="file" id="car-img-file" accept="image/*" class="w-full bg-white dark:bg-black/40 border border-gray-300 dark:border-white/10 rounded-xl px-3 py-1.5 text-xs text-gray-700 dark:text-gray-200 file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700">
+                    </div>
+                </div>
+
+                <div class="space-y-2 pt-2 border-t border-gray-200 dark:border-white/10">
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs font-bold text-purple-600 dark:text-purple-400"><i class="fa-solid fa-tags ml-1"></i> باقات الأسعار حسب الأيام (اختياري)</label>
+                        <button type="button" onclick="addPricingTierRow()" class="bg-purple-600/20 text-purple-700 dark:text-purple-300 hover:bg-purple-600 hover:text-white px-3 py-1 rounded-lg text-xs font-bold transition">+ إضافة باقة</button>
+                    </div>
+                    <div id="pricing-tiers-wrapper" class="space-y-2"></div>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="submit" id="submit-btn" class="flex-1 btn-modern-primary text-white font-bold py-2.5 rounded-xl text-xs shadow-lg">حفظ السيارة الجديدة</button>
+                    <button type="button" id="cancel-edit-btn" onclick="resetCarForm()" class="hidden px-4 py-2.5 rounded-xl glass-card text-xs font-bold text-gray-700 dark:text-gray-200 hover:text-white">إلغاء التعديل</button>
+                </div>
+            </form>
+
+            <div class="space-y-3 pt-4 border-t border-gray-200 dark:border-white/15">
+                <h4 class="font-bold text-xs text-gray-800 dark:text-gray-200"><i class="fa-solid fa-list-check ml-1"></i> السيارات المضافة حالياً في قاعدة البيانات</h4>
+                <div id="admin-cars-list" class="space-y-2 max-h-48 overflow-y-auto pr-1"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main JS Application Module -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCsKU41e2LuLipxVN9OYI3Q7kKLrIWqbNQ",
+            authDomain: "soteria-car.firebaseapp.com",
+            projectId: "soteria-car",
+            storageBucket: "soteria-car.firebasestorage.app",
+            messagingSenderId: "305007713414",
+            appId: "1:305007713414:web:5fe58e8693a796f1508507",
+            measurementId: "G-Y1DEG39PJ3"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let carsData = [];
+        let currentLang = document.documentElement.getAttribute('lang') || 'fr';
+
+        const reviewsData = {
+            fr: [
+                { name: "Mouna EL MOUTOUAKIL", text: "La voiture était impeccable, le service rapide et l'accueil très chaleureux. Tout s'est déroulé simplement, sans mauvaise surprise.", date: "Il y a 3 mois • Google Local Guide" },
+                { name: "Otry Nadia", text: "Excellente expérience. Véhicules propres et bien entretenus, équipe professionnelle et accueillante. Service rapide et transparent.", date: "Il y a 3 mois" },
+                { name: "Mohamed Elgherbi", text: "Très bon service ! Équipe professionnelle. Voitures en très bon état et à des prix abordables. Je recommande !", date: "Il y a 3 mois" }
+            ],
+            ar: [
+                { name: "منى الموتوكل", text: "السيارة كانت ممتازة، الخدمة سريعة والاستقبال دافئ جدا. كل شيء سار بسلاسة ودون مفاجآت سيئة.", date: "قبل 3 أشهر • مرشد محلي في جوجل" },
+                { name: "أوتري نادية", text: "تجربة ممتازة. السيارات نظيفة وفي حالة جيدة جدا، الفريق مهني ومرحب. خدمة سريعة وشفافة.", date: "قبل 3 أشهر" },
+                { name: "محمد الغربي", text: "خدمة جيدة جدا! فريق محترف. السيارات في حالة ممتازة وبأسعار معقولة. أنصح بها بشدة!", date: "قبل 3 أشهر" }
+            ]
+        };
+
+        function renderReviews() {
+            const container = document.getElementById('reviews-container');
+            if(!container) return;
+            const revs = reviewsData[currentLang];
+            container.innerHTML = '';
+            revs.forEach(rev => {
+                container.innerHTML += `
+                    <div class="glass-card p-5 rounded-2xl space-y-3 flex flex-col justify-between border border-gray-200 dark:border-white/10 shadow-md">
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="font-bold text-xs text-gray-900 dark:text-white">${rev.name}</span>
+                                <div class="flex text-amber-400 text-xs"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                            </div>
+                            <p class="text-xs text-gray-700 dark:text-gray-200 leading-relaxed">"${rev.text}"</p>
+                        </div>
+                        <span class="text-[10px] text-gray-500 dark:text-gray-400">${rev.date}</span>
+                    </div>
+                `;
+            });
+        }
+
+        async function fetchCars() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "cars"));
+                carsData = querySnapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
+                renderFleet();
+                renderAdminCarsList();
+            } catch (error) {
+                console.error("Error fetching cars: ", error);
+            }
+        }
+
+        function renderFleet() {
+            const container = document.getElementById('fleet-container');
+            if (!container) return;
+            
+            if (carsData.length === 0) {
+                container.innerHTML = `<p class="text-center text-gray-500 dark:text-gray-400 col-span-3 py-10">${currentLang === 'ar' ? 'لا توجد سيارات حاليا. أضف بعضها من لوحة الإدارة.' : 'Aucun véhicule disponible pour le moment. Ajoutez-en depuis le panneau d\'administration.'}</p>`;
+                return;
+            }
+            container.innerHTML = '';
+            
+            carsData.forEach(car => {
+                const isReserved = car.status === 'reserved';
+                const statusBadge = isReserved 
+                    ? `<span class="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] px-2.5 py-1 rounded-lg font-bold shadow z-10"><i class="fa-solid fa-lock ml-1"></i> ${currentLang === 'ar' ? 'محجوزة' : 'Réservé'}</span>`
+                    : `<span class="absolute top-2.5 left-2.5 bg-emerald-600 text-white text-[10px] px-2.5 py-1 rounded-lg font-bold shadow z-10"><i class="fa-solid fa-check ml-1"></i> ${currentLang === 'ar' ? 'متوفرة' : 'Disponible'}</span>`;
+
+                let tiersHtml = '';
+                if (car.pricing_tiers && car.pricing_tiers.length > 0) {
+                    car.pricing_tiers.forEach(tier => {
+                        if (tier.days && tier.price) {
+                            if (currentLang === 'ar') {
+                                tiersHtml += `
+                                    <div class="flex items-center justify-between text-xs text-purple-700 dark:text-purple-300 font-semibold bg-purple-100 dark:bg-purple-950/50 px-3 py-1.5 rounded-xl border border-purple-500/20 mt-1.5">
+                                        <span><i class="fa-solid fa-tag text-purple-500 ml-1.5"></i> باقة ${tier.days} أيام</span>
+                                        <span class="font-black text-purple-600 dark:text-purple-300">${tier.price}</span>
+                                    </div>
+                                `;
+                            } else {
+                                tiersHtml += `
+                                    <div class="flex items-center justify-between text-xs text-purple-700 dark:text-purple-300 font-semibold bg-purple-100 dark:bg-purple-950/50 px-3 py-1.5 rounded-xl border border-purple-500/20 mt-1.5">
+                                        <span><i class="fa-solid fa-tag text-purple-500 mr-1.5"></i> Pack ${tier.days} Jours</span>
+                                        <span class="font-black text-purple-600 dark:text-purple-300">${tier.price}</span>
+                                    </div>
+                                `;
+                            }
+                        }
+                    });
+                }
+
+                const imageUrl = car.img_url || 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85';
+                const safeCarName = car.name ? car.name.replace(/'/g, "\\'") : '';
+                const zoomText = currentLang === 'ar' ? 'تكبير الصورة' : 'Agrandir l\'image';
+                const imgTitle = currentLang === 'ar' ? 'اضغط لمشاهدة الصورة بحجم كبير' : 'Cliquez pour voir l\'image en grand';
+                const reservedText = currentLang === 'ar' ? 'محجوزة' : 'Non disponible';
+                const availableLabel = currentLang === 'ar' ? 'متاح للحجز' : 'Disponible';
+                const reserveBtnText = currentLang === 'ar' ? 'حجز' : 'Réserver';
+                const tiersJson = encodeURIComponent(JSON.stringify(car.pricing_tiers || []));
+
+                container.innerHTML += `
+                    <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between shadow-lg group">
+                        <div>
+                            <div class="h-44 relative overflow-hidden bg-black/25 cursor-pointer" onclick="openImageModal('${imageUrl}', '${safeCarName}')" title="${imgTitle}">
+                                <img src="${imageUrl}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" style="image-rendering: -webkit-optimize-contrast;" onerror="this.src='https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85'">
+                                <div class="absolute inset-0 bg-purple-950/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                                    <span class="bg-black/70 text-white text-xs px-3 py-1.5 rounded-xl font-bold backdrop-blur-md border border-white/20 shadow-lg">
+                                        <i class="fa-solid fa-magnifying-glass-plus ml-1 text-purple-400"></i> ${zoomText}
+                                    </span>
+                                </div>
+                                ${statusBadge}
+                            </div>
+                            <div class="p-4 space-y-1">
+                                <h3 class="text-lg font-bold text-gray-900 dark:text-white">${car.name}</h3>
+                            </div>
+                        </div>
+                        <div class="p-4 pt-0 space-y-2">
+                            <div class="flex items-baseline justify-between">
+                                <span class="text-xl font-black text-purple-600 dark:text-purple-400">${car.price_1day}</span>
+                                <span class="text-[11px] text-gray-500 dark:text-gray-400 font-medium">${currentLang === 'ar' ? 'لكل يوم' : 'par jour'}</span>
+                            </div>
+                            ${tiersHtml}
+                            <div class="mt-3 pt-2 border-t border-gray-200 dark:border-white/10 flex items-center justify-between">
+                                <span class="text-[10px] text-gray-500 dark:text-gray-400 font-semibold">${isReserved ? reservedText : availableLabel}</span>
+                                ${isReserved ? `<button disabled class="bg-gray-300 dark:bg-zinc-800 text-gray-500 px-4 py-2 rounded-xl text-xs font-semibold cursor-not-allowed">${reservedText}</button>` : `<button onclick="openBookingModal('${safeCarName}', '${car.price_1day}', '${tiersJson}')" class="btn-modern-primary text-white px-4 py-2 rounded-xl text-xs font-semibold"><i class="fa-brands fa-whatsapp ml-1"></i> ${reserveBtnText}</button>`}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Booking Modal Logic
+        function openBookingModal(carName, price1Day, tiersStr) {
+            document.getElementById('book-car-name').value = carName;
+            document.getElementById('book-car-display').value = carName;
+            document.getElementById('book-car-price-base').value = price1Day;
+            document.getElementById('book-car-tiers').value = tiersStr;
+            
+            const today = new Date().toISOString().split('T')[0];
+            const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+            document.getElementById('book-start-date').value = today;
+            document.getElementById('book-end-date').value = tomorrow;
+            
+            calculateTotal();
+            document.getElementById('booking-modal').classList.remove('hidden');
+        }
+
+        function closeBookingModal() {
+            document.getElementById('booking-modal').classList.add('hidden');
+        }
+
+        function calculateTotal() {
+            const startStr = document.getElementById('book-start-date').value;
+            const endStr = document.getElementById('book-end-date').value;
+            const basePriceStr = document.getElementById('book-car-price-base').value;
+            const tiersStr = document.getElementById('book-car-tiers').value;
+
+            if(!startStr || !endStr) return;
+
+            const start = new Date(startStr);
+            const end = new Date(endStr);
+            let diffTime = end - start;
+            let days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if(days <= 0) days = 1;
+
+            let numericPrice = parseFloat(basePriceStr.replace(/[^0-9.]/g, '')) || 300;
+            let total = numericPrice * days;
+
+            try {
+                const tiers = JSON.parse(decodeURIComponent(tiersStr));
+                if(tiers && tiers.length > 0) {
+                    tiers.sort((a,b) => b.days - a.days);
+                    for(let tier of tiers) {
+                        if(days >= tier.days) {
+                            let tierNumPrice = parseFloat(tier.price.replace(/[^0-9.]/g, ''));
+                            if(!isNaN(tierNumPrice)) {
+                                let multiplier = Math.floor(days / tier.days);
+                                let remainderDays = days % tier.days;
+                                total = (multiplier * tierNumPrice) + (remainderDays * numericPrice);
+                                break;
+                            }
+                        }
+                    }
+                }
+            } catch(e) {}
+
+            document.getElementById('book-duration-text').textContent = currentLang === 'ar' ? `${days} أيام` : `${days} Jours`;
+            document.getElementById('book-total-price').textContent = total + ' MAD';
+        }
+
+        function submitBooking(e) {
+            e.preventDefault();
+            const carName = document.getElementById('book-car-name').value;
+            const fullName = document.getElementById('book-fullname').value;
+            const phone = document.getElementById('book-phone').value;
+            const startDate = document.getElementById('book-start-date').value;
+            const endDate = document.getElementById('book-end-date').value;
+            const location = document.getElementById('book-location').value;
+            const duration = document.getElementById('book-duration-text').textContent;
+            const totalPrice = document.getElementById('book-total-price').textContent;
+
+            let msg = currentLang === 'ar' 
+                ? `🌟 *طلب حجز جديد عبر الموقع* 🌟\n\n🚗 *السيارة:* ${carName}\n👤 *الاسم الكامل:* ${fullName}\n📞 *رقم الهاتف:* ${phone}\n📅 *تاريخ الاستلام:* ${startDate}\n📅 *تاريخ الرجوع:* ${endDate}\n⏱️ *المدة:* ${duration}\n📍 *مكان الاستلام:* ${location}\n💰 *الثمن الإجمالي:* ${totalPrice}`
+                : `🌟 *Nouvelle Réservation* 🌟\n\n🚗 *Véhicule:* ${carName}\n👤 *Nom complet:* ${fullName}\n📞 *Téléphone:* ${phone}\n📅 *Date début:* ${startDate}\n📅 *Date fin:* ${endDate}\n⏱️ *Durée:* ${duration}\n📍 *Lieu:* ${location}\n💰 *Prix total:* ${totalPrice}`;
+
+            const ownerPhone = "212661679702";
+            window.open(`https://wa.me/${ownerPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+
+            closeBookingModal();
+            document.getElementById('booking-form').reset();
+            
+            const toast = document.getElementById('success-toast');
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 4000);
+        }
+
+        function openImageModal(url, title) {
+            const modal = document.getElementById('image-modal');
+            const imgEl = document.getElementById('modal-img-element');
+            const titleEl = document.getElementById('modal-img-title');
+            if(!modal || !imgEl) return;
+            imgEl.src = url;
+            titleEl.textContent = title;
+            modal.classList.remove('hidden');
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('image-modal');
+            if(modal) modal.classList.add('hidden');
+        }
+
+        function addPricingTierRow(days = '', price = '') {
+            const wrapper = document.getElementById('pricing-tiers-wrapper');
+            const rowId = 'tier_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
+            const placeholderDays = currentLang === 'ar' ? 'عدد الأيام (مثلاً: 3)' : 'Nombre de jours (ex: 3)';
+            const placeholderPrice = currentLang === 'ar' ? 'الثمن (مثلاً: 1100 MAD)' : 'Prix (ex: 1100 MAD)';
+            const rowHtml = `
+                <div id="${rowId}" class="flex items-center gap-2 bg-gray-100 dark:bg-black/40 p-2.5 rounded-xl border border-purple-500/20">
+                    <input type="number" placeholder="${placeholderDays}" value="${days}" class="tier-days w-1/2 bg-white dark:bg-black/60 border rounded-lg px-3 py-1.5 text-xs outline-none focus:border-purple-500 text-gray-900 dark:text-white">
+                    <input type="text" placeholder="${placeholderPrice}" value="${price}" class="tier-price w-1/2 bg-white dark:bg-black/60 border rounded-lg px-3 py-1.5 text-xs outline-none focus:border-purple-500 text-gray-900 dark:text-white">
+                    <button type="button" onclick="document.getElementById('${rowId}').remove()" class="text-rose-500 hover:text-rose-700 px-2 py-1 text-xs font-bold shrink-0"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+            `;
+            wrapper.insertAdjacentHTML('beforeend', rowHtml);
+        }
+
+        function renderAdminCarsList() {
+            const list = document.getElementById('admin-cars-list');
+            if(!list) return;
+            if(carsData.length === 0) {
+                list.innerHTML = `<p class="text-xs text-gray-400 text-center py-2">${currentLang === 'ar' ? 'لا توجد سيارات مضافة بعد.' : 'Aucun véhicule ajouté pour le moment.'}</p>`;
+                return;
+            }
+            list.innerHTML = '';
+            carsData.forEach((car) => {
+                const safeCarName = car.name ? car.name.replace(/'/g, "\\'") : '';
+                const editTxt = currentLang === 'ar' ? 'تعديل' : 'Modifier';
+                const deleteTxt = currentLang === 'ar' ? 'حذف' : 'Supprimer';
+                list.innerHTML += `
+                    <div class="flex justify-between items-center p-2.5 bg-gray-100 dark:bg-black/40 rounded-xl text-xs border border-white/5">
+                        <div class="flex items-center gap-2.5">
+                            <img src="${car.img_url || ''}" class="w-9 h-9 rounded-lg object-cover cursor-pointer" onclick="openImageModal('${car.img_url}', '${safeCarName}')">
+                            <div>
+                                <p class="font-bold text-gray-900 dark:text-white">${car.name}</p>
+                                <p class="text-[10px] text-gray-500 dark:text-gray-400">${car.price_1day}</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-1.5">
+                            <button type="button" onclick="editCar('${car.id}')" class="text-purple-600 font-bold px-3 py-1.5 rounded-lg bg-purple-500/20 hover:bg-purple-500 hover:text-white transition">${editTxt}</button>
+                            <button type="button" onclick="deleteCar('${car.id}')" class="text-rose-500 font-bold px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500 hover:text-white transition">${deleteTxt}</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function editCar(id) {
+            const car = carsData.find(c => c.id === id);
+            if (!car) return;
+
+            document.getElementById('editing-car-id').value = car.id;
+            document.getElementById('car-name').value = car.name;
+            document.getElementById('car-price-1day').value = car.price_1day;
+            document.getElementById('car-status').value = car.status || 'available';
+            document.getElementById('admin-modal-title').textContent = currentLang === 'ar' ? 'تعديل سيارة: ' + car.name : 'Modifier le véhicule : ' + car.name;
+            document.getElementById('submit-btn').textContent = currentLang === 'ar' ? 'تحديث التغييرات' : 'Mettre à jour';
+            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+
+            document.getElementById('pricing-tiers-wrapper').innerHTML = '';
+            if (car.pricing_tiers && car.pricing_tiers.length > 0) {
+                car.pricing_tiers.forEach(tier => {
+                    addPricingTierRow(tier.days, tier.price);
+                });
+            }
+        }
+
+        function resetCarForm() {
+            document.getElementById('add-car-form').reset();
+            document.getElementById('editing-car-id').value = '';
+            document.getElementById('pricing-tiers-wrapper').innerHTML = '';
+            document.getElementById('admin-modal-title').textContent = currentLang === 'ar' ? 'لوحة تحكم الإدارة' : 'Panneau d\'administration';
+            document.getElementById('submit-btn').textContent = currentLang === 'ar' ? 'حفظ السيارة الجديدة' : 'Enregistrer le nouveau véhicule';
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
+        }
+
+        const safeCompress = (file) => new Promise((resolve) => {
+            if (!file) {
+                resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85');
+                return;
+            }
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    try {
+                        const canvas = document.createElement('canvas');
+                        const MAX_SIZE = 1200;
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > height) {
+                            if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; }
+                        } else {
+                            if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; }
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.imageSmoothingEnabled = true;
+                        ctx.imageSmoothingQuality = 'high';
+                        ctx.drawImage(img, 0, 0, width, height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.95));
+                    } catch (e) {
+                        resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85');
+                    }
+                };
+                img.onerror = () => resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85');
+            };
+            reader.onerror = () => resolve('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85');
+        });
+
+        async function saveCarToFirebase(e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submit-btn');
+            const editingId = document.getElementById('editing-car-id').value;
+            
+            submitBtn.textContent = currentLang === 'ar' ? 'جاري الحفظ...' : 'Enregistrement en cours...';
+            submitBtn.disabled = true;
+
+            try {
+                const pricingTiers = [];
+                document.querySelectorAll('#pricing-tiers-wrapper > div').forEach(row => {
+                    const days = row.querySelector('.tier-days').value;
+                    const price = row.querySelector('.tier-price').value;
+                    if(days && price) {
+                        pricingTiers.push({ days: Number(days), price: price });
+                    }
+                });
+
+                const fileInput = document.getElementById('car-img-file');
+                
+                let carDataObj = {
+                    name: document.getElementById('car-name').value,
+                    price_1day: document.getElementById('car-price-1day').value,
+                    pricing_tiers: pricingTiers,
+                    status: document.getElementById('car-status').value,
+                    updated_at: new Date().toISOString()
+                };
+
+                if (fileInput.files.length > 0) {
+                    carDataObj.img_url = await safeCompress(fileInput.files[0]);
+                } else if (!editingId) {
+                    carDataObj.img_url = 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85';
+                }
+
+                if (editingId) {
+                    await updateDoc(doc(db, "cars", editingId), carDataObj);
+                    submitBtn.textContent = currentLang === 'ar' ? 'حفظ السيارة الجديدة' : 'Enregistrer le nouveau véhicule';
+                    submitBtn.disabled = false;
+                    resetCarForm();
+                    await fetchCars();
+                    alert(currentLang === 'ar' ? 'تم التعديل بنجاح!' : 'Modifié avec succès !');
+                } else {
+                    carDataObj.created_at = new Date().toISOString();
+                    await addDoc(collection(db, "cars"), carDataObj);
+                    submitBtn.textContent = currentLang === 'ar' ? 'حفظ السيارة الجديدة' : 'Enregistrer le nouveau véhicule';
+                    submitBtn.disabled = false;
+                    resetCarForm();
+                    await fetchCars();
+                    alert(currentLang === 'ar' ? 'تم الحفظ بنجاح!' : 'Enregistré avec succès !');
+                }
+
+            } catch (error) {
+                console.error("Firebase Error Details:", error);
+                alert((currentLang === 'ar' ? 'خطأ أثناء الحفظ: ' : 'Erreur lors de l\'enregistrement : ') + error.message);
+                submitBtn.textContent = editingId ? (currentLang === 'ar' ? 'تحديث التغييرات' : 'Mettre à jour') : (currentLang === 'ar' ? 'حفظ السيارة الجديدة' : 'Enregistrer le nouveau véhicule');
+                submitBtn.disabled = false;
+            }
+        }
+
+        async function deleteCar(id) {
+            if (confirm(currentLang === 'ar' ? 'هل أنت متأكد من حذف هذه السيارة؟' : 'Êtes-vous sûr de vouloir supprimer ce véhicule ?')) {
+                try {
+                    await deleteDoc(doc(db, "cars", id));
+                    await fetchCars();
+                    alert(currentLang === 'ar' ? 'تم الحذف بنجاح!' : 'Supprimé avec succès !');
+                } catch (error) {
+                    alert((currentLang === 'ar' ? 'خطأ في الحذف: ' : 'Erreur de suppression : ') + error.message);
+                }
+            }
+        }
+
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        function changeSlide(direction) {
+            if(slides.length === 0) return;
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + direction + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+        setInterval(() => { changeSlide(1); }, 4000);
+
+        let phraseIndex = 0;
+        const phrases = {
+            fr: [
+                "Voyagez en toute liberté avec Soteria Car",
+                "Votre partenaire idéal pour la location de voitures",
+                "Des véhicules récents et confortables pour vos trajets"
+            ],
+            ar: [
+                "سافر بكل حرية وثقة مع وكالة Soteria Car",
+                "شريكك الأمثل لكراء السيارات بأفضل الشروط",
+                "سيارات حديثة ومريحة لجميع تنقلاتكم بالمغرب"
+            ]
+        };
+        const dynamicTextEl = document.getElementById('dynamic-text');
+
+        function rotatePhrases() {
+            if(!dynamicTextEl) return;
+            const list = phrases[currentLang];
+            phraseIndex = (phraseIndex + 1) % list.length;
+            dynamicTextEl.style.opacity = 0;
+            setTimeout(() => {
+                dynamicTextEl.textContent = list[phraseIndex];
+                dynamicTextEl.style.opacity = 1;
+            }, 300);
+        }
+        setInterval(rotatePhrases, 3500);
+
+        const translations = {
+            fr: {
+                logoSub: "Location de voitures",
+                heroDesc: "Découvrez notre flotte de véhicules récents, confortables et entretenus pour tous vos deplacements à des prix imbattables.",
+                btnFleet: "Voir les Voitures",
+                btnContact: "Contactez-nous",
+                fleetBadge: "Catalogue & Offres",
+                fleetTitle1: "Notre",
+                fleetTitle2: "Flotte de Véhicules",
+                fleetDesc: "Choisissez le véhicule qui s'adapte parfaitement à vos besoins et profitez d'un confort absolu.",
+                hoursTitle: "Horaires d'ouverture",
+                openStatus: "Ouvert 9:00 • Fermé à 21:00",
+                addrTitle: "Adresse de l'Agence",
+                phoneTitle: "Téléphone / WhatsApp",
+                supportTitle: "Support 24/7",
+                supportStatus: "Disponible 24h/24 et 7j/7",
+                footer: "© 2026 Soteria Car. Tous droits réservés.",
+                googleTitle: "Google Maps Avis",
+                googleBtn: "Voir tous les avis sur Google",
+                adminText: "Administration",
+                loginTitle: "Administration",
+                loginUser: "Nom d'utilisateur (admin)",
+                loginPass: "Mot de passe (123)",
+                loginBtn: "Connexion"
+            },
+            ar: {
+                logoSub: "كراء السيارات",
+                heroDesc: "اكتشف أسطول سياراتنا الحديثة، المريحة والمجهزة بعناية لجميع تنقلاتكم بأفضل الأسعار.",
+                btnFleet: "عرض السيارات",
+                btnContact: "اتصل بنا",
+                fleetBadge: "كتالوج العروض",
+                fleetTitle1: "أسطول",
+                fleetTitle2: "سياراتنا المتميزة",
+                fleetDesc: "اختر السيارة التي تناسب احتياجات رحلتك بدقة واستمتع بتجربة قيادة مريحة وآمنة.",
+                hoursTitle: "أوقات العمل",
+                openStatus: "مفتوح 09:00 • يغلق على الساعة 21:00",
+                addrTitle: "عنوان الوكالة",
+                phoneTitle: "الهاتف / واتساب",
+                supportTitle: "الدعم والخدمة",
+                supportStatus: "تواصل على مدار 24/7",
+                footer: "© 2026 Soteria Car. جميع الحقوق محفوظة.",
+                googleTitle: "تقييمات خرائط جوجل",
+                googleBtn: "عرض جميع التقييمات على جوجل",
+                adminText: "الإدارة",
+                loginTitle: "الإدارة",
+                loginUser: "اسم المستخدم (admin)",
+                loginPass: "كلمة المرور (123)",
+                loginBtn: "تسجيل الدخول"
+            }
+        };
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'fr' ? 'ar' : 'fr';
+            const t = translations[currentLang];
+            const langBtn = document.getElementById('langToggleBtn');
+
+            if(currentLang === 'ar') {
+                document.documentElement.setAttribute('dir', 'rtl');
+                document.documentElement.setAttribute('lang', 'ar');
+                langBtn.textContent = 'FR';
+            } else {
+                document.documentElement.setAttribute('dir', 'ltr');
+                document.documentElement.setAttribute('lang', 'fr');
+                langBtn.textContent = 'AR';
+            }
+
+            document.getElementById('logo-sub').textContent = t.logoSub;
+            document.getElementById('hero-desc').textContent = t.heroDesc;
+            document.getElementById('btn-fleet').innerHTML = `<i class="fa-solid fa-car ml-2"></i> ${t.btnFleet}`;
+            document.getElementById('btn-contact').innerHTML = `<i class="fa-solid fa-headset ml-2 text-purple-600 dark:text-purple-400"></i> ${t.btnContact}`;
+            document.getElementById('fleet-badge').textContent = t.fleetBadge;
+            document.getElementById('fleet-title-1').textContent = t.fleetTitle1;
+            document.getElementById('fleet-title-2').textContent = t.fleetTitle2;
+            document.getElementById('fleet-desc').textContent = t.fleetDesc;
+            document.getElementById('hours-title').textContent = t.hoursTitle;
+            document.getElementById('open-status').textContent = t.openStatus;
+            document.getElementById('addr-title').textContent = t.addrTitle;
+            document.getElementById('phone-title').textContent = t.phoneTitle;
+            document.getElementById('support-title').textContent = t.supportTitle;
+            document.getElementById('support-status').textContent = t.supportStatus;
+            document.getElementById('footer-text').textContent = t.footer;
+            document.getElementById('google-title').textContent = t.googleTitle;
+            document.getElementById('google-btn').innerHTML = `<i class="fa-solid fa-arrow-up-right-from-square ml-1.5"></i> ${t.googleBtn}`;
+            document.getElementById('admin-footer-btn').textContent = t.adminText;
+            document.getElementById('admin-login-title').innerHTML = `<i class="fa-solid fa-lock text-purple-600 dark:text-purple-500 ml-2"></i> ${t.loginTitle}`;
+            document.getElementById('admin-user').placeholder = t.loginUser;
+            document.getElementById('admin-pass').placeholder = t.loginPass;
+            document.getElementById('admin-login-btn').textContent = t.loginBtn;
+
+            phraseIndex = 0;
+            dynamicTextEl.textContent = phrases[currentLang][0];
+            renderReviews();
+            renderFleet();
+            renderAdminCarsList();
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById('theme-icon');
+            body.classList.toggle('light-mode');
+            if(body.classList.contains('light-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+
+        function openLoginModal() { document.getElementById('login-modal').classList.remove('hidden'); }
+        function closeLoginModal() { document.getElementById('login-modal').classList.add('hidden'); }
+        function checkAdminLogin() {
+            if(document.getElementById('admin-user').value === 'amir' && document.getElementById('admin-pass').value === '2026amir') {
+                closeLoginModal();
+                document.getElementById('admin-modal').classList.remove('hidden');
+                fetchCars();
+            } else { alert(currentLang === 'ar' ? 'خطأ في معلومات الدخول (استعمل admin / 123)' : 'Erreur de connexion (utilisez admin / 12203)'); }
+        }
+        function toggleAdminModal() { document.getElementById('admin-modal').classList.toggle('hidden'); }
+
+        window.toggleTheme = toggleTheme;
+        window.toggleLanguage = toggleLanguage;
+        window.openLoginModal = openLoginModal;
+        window.closeLoginModal = closeLoginModal;
+        window.checkAdminLogin = checkAdminLogin;
+        window.toggleAdminModal = toggleAdminModal;
+        window.saveCarToFirebase = saveCarToFirebase;
+        window.addPricingTierRow = addPricingTierRow;
+        window.editCar = editCar;
+        window.deleteCar = deleteCar;
+        window.resetCarForm = resetCarForm;
+        window.openImageModal = openImageModal;
+        window.closeImageModal = closeImageModal;
+        window.openBookingModal = openBookingModal;
+        window.closeBookingModal = closeBookingModal;
+        window.calculateTotal = calculateTotal;
+        window.submitBooking = submitBooking;
+
+        renderReviews();
+        fetchCars();
+    </script>
+</body>
+</html>
