@@ -200,15 +200,23 @@
         <div id="reviews-container" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
     </section>
 
-    <!-- Social Media Links Section -->
+    <!-- Social Media Section (Added in the gap) -->
     <section class="max-w-7xl mx-auto px-4 lg:px-16 py-4 w-full">
-        <div class="glass-card p-5 rounded-3xl flex items-center justify-center gap-3">
-            <a href="https://instagram.com" target="_blank" class="flex-1 max-w-xs py-3.5 px-6 rounded-2xl bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02] transition">
-                <i class="fa-brands fa-instagram text-base"></i> Instagram
-            </a>
-            <a href="https://facebook.com" target="_blank" class="flex-1 max-w-xs py-3.5 px-6 rounded-2xl bg-blue-600 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02] transition">
-                <i class="fa-brands fa-facebook-f text-base"></i> Facebook
-            </a>
+        <div class="glass-card p-6 lg:p-8 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-share-nodes"></i>
+                </div>
+                <h4 id="social-title" class="font-extrabold text-xs lg:text-sm uppercase tracking-wider">Suivez-nous sur les réseaux sociaux</h4>
+            </div>
+            <div class="flex items-center gap-2">
+                <a href="https://instagram.com" target="_blank" class="px-5 py-3 rounded-2xl glass-card text-xs font-bold uppercase tracking-wider flex items-center gap-2 hover:bg-gradient-to-tr hover:from-amber-500 hover:to-rose-500 hover:text-white transition">
+                    <i class="fa-brands fa-instagram text-base text-amber-500"></i> Instagram
+                </a>
+                <a href="https://facebook.com" target="_blank" class="px-5 py-3 rounded-2xl glass-card text-xs font-bold uppercase tracking-wider flex items-center gap-2 hover:bg-amber-500 hover:text-slate-950 transition">
+                    <i class="fa-brands fa-facebook text-base text-amber-500"></i> Facebook
+                </a>
+            </div>
         </div>
     </section>
 
@@ -865,7 +873,8 @@
                 supportTitle: "Support 24/7", supportStatus: "Service client disponible",
                 footer: "© 2026 Elmardi Luxury Cars. Tous droits réservés.",
                 googleTitle: "Google Maps Avis", googleBtn: "Voir tous les avis", adminText: "Administration",
-                personal: "Particulier", corporate: "Entreprises"
+                personal: "Particulier", corporate: "Entreprises",
+                socialTitle: "Suivez-nous sur les réseaux sociaux"
             },
             ar: {
                 logoSub: "كراء السيارات • القنيطرة",
@@ -882,7 +891,8 @@
                 supportTitle: "الدعم والخدمة", supportStatus: "خدمة العملاء متوفرة",
                 footer: "© 2026 Elmardi Luxury Cars. جميع الحقوق محفوظة.",
                 googleTitle: "تقييمات خرائط جوجل", googleBtn: "عرض جميع التقييمات", adminText: "الإدارة",
-                personal: "الأفراد", corporate: "الشركات"
+                personal: "الأفراد", corporate: "الشركات",
+                socialTitle: "تابعنا على مواقع التواصل الاجتماعي"
             }
         };
 
@@ -932,6 +942,7 @@
             document.getElementById('google-title').textContent = t.googleTitle;
             document.getElementById('google-btn').innerHTML = `<span>${t.googleBtn}</span> <i class="fa-solid fa-arrow-up-right-from-square"></i>`;
             document.getElementById('admin-footer-btn').textContent = t.adminText;
+            document.getElementById('social-title').textContent = t.socialTitle;
 
             phraseIndex = 0;
             dynamicTextEl.textContent = phrases[currentLang][0];
