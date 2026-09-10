@@ -506,7 +506,7 @@
 
                 const categoryBadge = car.category === 'corporate' 
                     ? `<span class="absolute top-4 right-4 bg-amber-500/90 backdrop-blur-md text-slate-950 text-[10px] px-3 py-1 rounded-full font-extrabold shadow-lg z-10"><i class="fa-solid fa-building mr-1"></i> ${currentLang === 'ar' ? 'الشركات' : 'Entreprise'}</span>`
-                    : `<span class="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-md text-amber-400 text-[10px] px-3 py-1 rounded-full font-extrabold shadow-lg z-10"><i class="fa-solid fa-user mr-1"></i> ${currentLang === 'ar' ? 'الخاص' : 'Particulier'}</span>`;
+                    : `<span class="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-md text-amber-400 text-[10px] px-3 py-1 rounded-full font-extrabold shadow-lg z-10"><i class="fa-solid fa-user mr-1"></i> ${currentLang === 'ar' ? 'الأفراد' : 'Particulier'}</span>`;
 
                 let tiersHtml = '';
                 if (car.pricing_tiers && car.pricing_tiers.length > 0) {
@@ -839,6 +839,9 @@
                 btnFleet: "Voir les Voitures", btnContact: "Contactez-nous",
                 fleetBadge: "Catalogue & Offres", fleetTitle1: "Notre", fleetTitle2: "Flotte de Véhicules",
                 fleetDesc: "Choisissez la formule idéale pour vos besoins particuliers ou professionnels.",
+                stat1Title: "Véhicules Garantis", stat1Desc: "Modèles récents et entretenus",
+                stat2Title: "Support 24/7", stat2Desc: "Assistance à votre écoute",
+                stat3Title: "Tarifs Transparent", stat3Desc: "Sans frais cachés avec packs pro",
                 hoursTitle: "Horaires d'ouverture", openStatus: "Ouvert 9:00 • Fermé à 21:00",
                 addrTitle: "Adresse de l'Agence", phoneTitle: "Téléphone / WhatsApp",
                 supportTitle: "Support 24/7", supportStatus: "Service client disponible",
@@ -852,12 +855,15 @@
                 btnFleet: "عرض السيارات", btnContact: "اتصل بنا",
                 fleetBadge: "كتالوج العروض", fleetTitle1: "أسطول", fleetTitle2: "سياراتنا",
                 fleetDesc: "اختر الصيغة المثالية لمتطلباتك الشخصية أو المهنية بأفضل الأسعار.",
+                stat1Title: "سيارات مضمونة", stat1Desc: "موديلات حديثة ومصانة دورياً",
+                stat2Title: "دعم 24/7", stat2Desc: "مساعدة ودعم في خدمتك دائماً",
+                stat3Title: "أسعار شفافة", stat3Desc: "بدون رسوم مخفية مع باقات احترافية",
                 hoursTitle: "أوقات العمل", openStatus: "مفتوح 09:00 • يغلق 21:00",
                 addrTitle: "عنوان الوكالة", phoneTitle: "الهاتف / واتساب",
                 supportTitle: "الدعم والخدمة", supportStatus: "خدمة العملاء متوفرة",
                 footer: "© 2026 Elmardi Luxury Cars. جميع الحقوق محفوظة.",
                 googleTitle: "تقييمات خرائط جوجل", googleBtn: "عرض جميع التقييمات", adminText: "الإدارة",
-                personal: "الخاص / Particulier", corporate: "الشركات / Entreprises"
+                personal: "الأفراد", corporate: "الشركات"
             }
         };
 
@@ -878,6 +884,14 @@
 
             document.getElementById('lbl-personal').textContent = t.personal;
             document.getElementById('lbl-corporate').textContent = t.corporate;
+            
+            document.getElementById('stat-1-title').textContent = t.stat1Title;
+            document.getElementById('stat-1-desc').textContent = t.stat1Desc;
+            document.getElementById('stat-2-title').textContent = t.stat2Title;
+            document.getElementById('stat-2-desc').textContent = t.stat2Desc;
+            document.getElementById('stat-3-title').textContent = t.stat3Title;
+            document.getElementById('stat-3-desc').textContent = t.stat3Desc;
+
             document.getElementById('logo-sub').textContent = t.logoSub;
             document.getElementById('hero-desc').textContent = t.heroDesc;
             document.getElementById('btn-fleet').innerHTML = `<i class="fa-solid fa-car ml-2"></i> ${t.btnFleet}`;
