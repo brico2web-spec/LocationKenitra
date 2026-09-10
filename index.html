@@ -101,22 +101,22 @@
     </header>
 
     <!-- Hero Section & Slider -->
-    <section class="relative h-[500px] lg:h-[580px] overflow-hidden flex items-center justify-center text-center px-4 rounded-b-[40px] lg:rounded-b-[60px] shadow-2xl">
+    <section class="relative min-h-[520px] lg:min-h-[580px] py-16 lg:py-24 overflow-hidden flex items-center justify-center text-center px-4 rounded-b-[40px] lg:rounded-b-[60px] shadow-2xl">
         <div class="absolute inset-0 z-0">
             <div class="slide active" style="background-image: linear-gradient(to bottom, rgba(3,7,18,0.5), rgba(3,7,18,0.85)), url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1920&q=85');"></div>
             <div class="slide" style="background-image: linear-gradient(to bottom, rgba(3,7,18,0.5), rgba(3,7,18,0.85)), url('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1920&q=85');"></div>
             <div class="slide" style="background-image: linear-gradient(to bottom, rgba(3,7,18,0.5), rgba(3,7,18,0.85)), url('https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=1920&q=85');"></div>
         </div>
 
-        <div class="relative z-10 max-w-4xl mx-auto space-y-6 text-white">
+        <div class="relative z-10 max-w-4xl mx-auto space-y-5 text-white">
             <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-semibold tracking-wider uppercase">
                 <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
                 <span>AGENCE DE LOCATION À KÉNITRA</span>
             </div>
-            <h2 id="dynamic-text" class="text-3xl lg:text-5xl font-extrabold tracking-tight min-h-[90px] drop-shadow-md">
+            <h2 id="dynamic-text" class="text-2xl lg:text-4xl font-extrabold tracking-tight drop-shadow-md transition-opacity duration-300">
                 Location de voitures pour particuliers et entreprises
             </h2>
-            <p id="hero-desc" class="text-sm lg:text-base text-slate-200 font-normal leading-relaxed max-w-2xl mx-auto">
+            <p id="hero-desc" class="text-xs lg:text-sm text-slate-200 font-normal leading-relaxed max-w-2xl mx-auto">
                 Des solutions de location flexibles adaptées à vos déplacements personnels et professionnels avec un service irréprochable.
             </p>
             <div class="flex flex-wrap items-center justify-center gap-4 pt-2">
@@ -131,7 +131,7 @@
     </section>
 
     <!-- Stats Strip -->
-    <div class="max-w-6xl mx-auto px-4 -mt-10 relative z-20 w-full">
+    <div class="max-w-6xl mx-auto px-4 -mt-8 relative z-20 w-full">
         <div class="glass-card p-6 lg:p-8 rounded-3xl grid grid-cols-1 md:grid-cols-3 gap-6 text-center divide-y md:divide-y-0 md:divide-x divide-slate-200/50 dark:divide-slate-800">
             <div class="space-y-2 pt-2 md:pt-0">
                 <div class="w-12 h-12 mx-auto rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-lg"><i class="fa-solid fa-shield-halved"></i></div>
@@ -159,7 +159,7 @@
             <p id="fleet-desc" class="text-xs lg:text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">Choisissez la formule idéale pour vos besoins particuliers ou professionnels.</p>
         </div>
 
-        <!-- Filter Buttons (Particulier / Entreprises) -->
+        <!-- Filter Buttons -->
         <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
             <button onclick="filterFleet('personal')" id="filter-personal" class="filter-btn active px-6 py-3 rounded-2xl glass-card text-xs font-bold uppercase tracking-wider transition">
                 <i class="fa-solid fa-user ml-1 text-amber-500"></i> <span id="lbl-personal">Particulier</span>
