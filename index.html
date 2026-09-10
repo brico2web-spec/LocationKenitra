@@ -160,13 +160,13 @@
             <p id="fleet-desc" class="text-xs lg:text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">Choisissez le véhicule d'exception qui s'adapte à vos exigences.</p>
         </div>
 
-        <!-- Filter Buttons (الخاص / الشركات) -->
+        <!-- Filter Buttons (Particulier / Entreprises) -->
         <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
             <button onclick="filterFleet('personal')" id="filter-personal" class="filter-btn active px-6 py-3 rounded-2xl glass-card text-xs font-bold uppercase tracking-wider transition">
-                <i class="fa-solid fa-user ml-1 text-amber-500"></i> <span id="lbl-personal">الخاص / Particulier</span>
+                <i class="fa-solid fa-user ml-1 text-amber-500"></i> <span id="lbl-personal">Particulier / الخاص</span>
             </button>
             <button onclick="filterFleet('corporate')" id="filter-corporate" class="filter-btn px-6 py-3 rounded-2xl glass-card text-xs font-bold uppercase tracking-wider transition">
-                <i class="fa-solid fa-building ml-1 text-amber-500"></i> <span id="lbl-corporate">الشركات / Entreprises</span>
+                <i class="fa-solid fa-building ml-1 text-amber-500"></i> <span id="lbl-corporate">Entreprises / الشركات</span>
             </button>
         </div>
 
@@ -373,8 +373,8 @@
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider mb-1.5 text-slate-500 dark:text-slate-400">نوع الكراء (الفئة)</label>
                         <select id="car-category" class="w-full bg-transparent border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-3 text-xs font-bold outline-none focus:border-amber-500 transition">
-                            <option value="personal" class="dark:bg-slate-900">خاص (Particulier)</option>
-                            <option value="corporate" class="dark:bg-slate-900">الشركات (Entreprises)</option>
+                            <option value="personal" class="dark:bg-slate-900">خاص / Particulier</option>
+                            <option value="corporate" class="dark:bg-slate-900">الشركات / Entreprises</option>
                         </select>
                     </div>
                     <div>
@@ -432,7 +432,7 @@
 
         let carsData = [];
         let currentLang = document.documentElement.getAttribute('lang') || 'fr';
-        let currentFilter = 'personal'; // افتراضياً يبدأ بالخاص
+        let currentFilter = 'personal';
 
         const reviewsData = {
             fr: [
@@ -506,8 +506,8 @@
                     : `<span class="absolute top-4 left-4 bg-emerald-500/90 backdrop-blur-md text-slate-950 text-[10px] px-3.5 py-1.5 rounded-full font-bold shadow-lg z-10 flex items-center gap-1"><i class="fa-solid fa-check"></i> ${currentLang === 'ar' ? 'متوفرة' : 'Disponible'}</span>`;
 
                 const categoryBadge = car.category === 'corporate' 
-                    ? `<span class="absolute top-4 right-4 bg-amber-500/90 backdrop-blur-md text-slate-950 text-[10px] px-3 py-1 rounded-full font-extrabold shadow-lg z-10"><i class="fa-solid fa-building ml-1"></i> ${currentLang === 'ar' ? 'شركات' : 'Entreprise'}</span>`
-                    : `<span class="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-md text-amber-400 text-[10px] px-3 py-1 rounded-full font-extrabold shadow-lg z-10"><i class="fa-solid fa-user ml-1"></i> ${currentLang === 'ar' ? 'خاص' : 'Particulier'}</span>`;
+                    ? `<span class="absolute top-4 right-4 bg-amber-500/90 backdrop-blur-md text-slate-950 text-[10px] px-3 py-1 rounded-full font-extrabold shadow-lg z-10"><i class="fa-solid fa-building ml-1"></i> ${currentLang === 'ar' ? 'الشركات / Entreprise' : 'Entreprise / الشركات'}</span>`
+                    : `<span class="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-md text-amber-400 text-[10px] px-3 py-1 rounded-full font-extrabold shadow-lg z-10"><i class="fa-solid fa-user ml-1"></i> ${currentLang === 'ar' ? 'الخاص / Particulier' : 'Particulier / الخاص'}</span>`;
 
                 let tiersHtml = '';
                 if (car.pricing_tiers && car.pricing_tiers.length > 0) {
@@ -832,7 +832,6 @@
                 btnFleet: "Voir les Voitures", btnContact: "Contactez-nous",
                 fleetBadge: "Catalogue & Offres", fleetTitle1: "Notre", fleetTitle2: "Flotte de Véhicules",
                 fleetDesc: "Choisissez le véhicule d'exception qui s'adapte à vos exigences.",
-                lblPersonal: "Particulier", lblCorporate: "Entreprises",
                 hoursTitle: "Horaires d'ouverture", openStatus: "Ouvert 9:00 • Fermé à 21:00",
                 addrTitle: "Adresse de l'Agence", phoneTitle: "Téléphone / WhatsApp",
                 supportTitle: "Support 24/7", supportStatus: "Disponible 24h/24 et 7j/7",
@@ -845,7 +844,6 @@
                 btnFleet: "عرض السيارات", btnContact: "اتصل بنا",
                 fleetBadge: "كتالوج العروض", fleetTitle1: "أسطول", fleetTitle2: "سياراتنا الفاخرة",
                 fleetDesc: "اختر السيارة التي تلبي متطلبات رحلتك الفاخرة بأفضل الأسعار.",
-                lblPersonal: "الخاص", lblCorporate: "الشركات",
                 hoursTitle: "أوقات العمل", openStatus: "مفتوح 09:00 • يغلق على الساعة 21:00",
                 addrTitle: "عنوان الوكالة", phoneTitle: "الهاتف / واتساب",
                 supportTitle: "الدعم والخدمة", supportStatus: "تواصل على مدار 24/7",
@@ -863,10 +861,14 @@
                 document.documentElement.setAttribute('dir', 'rtl');
                 document.documentElement.setAttribute('lang', 'ar');
                 langBtn.textContent = 'FR';
+                document.getElementById('lbl-personal').textContent = 'الخاص / Particulier';
+                document.getElementById('lbl-corporate').textContent = 'الشركات / Entreprises';
             } else {
                 document.documentElement.setAttribute('dir', 'ltr');
                 document.documentElement.setAttribute('lang', 'fr');
                 langBtn.textContent = 'AR';
+                document.getElementById('lbl-personal').textContent = 'Particulier / الخاص';
+                document.getElementById('lbl-corporate').textContent = 'Entreprises / الشركات';
             }
 
             document.getElementById('logo-sub').textContent = t.logoSub;
@@ -877,9 +879,6 @@
             document.getElementById('fleet-title-1').textContent = t.fleetTitle1;
             document.getElementById('fleet-title-2').textContent = t.fleetTitle2;
             document.getElementById('fleet-desc').textContent = t.fleetDesc;
-            
-            document.getElementById('lbl-personal').textContent = currentLang === 'ar' ? 'الخاص' : 'Particulier';
-            document.getElementById('lbl-corporate').textContent = currentLang === 'ar' ? 'الشركات' : 'Entreprises';
 
             document.getElementById('hours-title').textContent = t.hoursTitle;
             document.getElementById('open-status').textContent = t.openStatus;
