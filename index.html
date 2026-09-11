@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', 'Cairo', sans-serif; transition: background 0.4s ease, color 0.4s ease; }
+        body { font-family: 'Plus Jakarta Sans', 'Cairo', sans-serif; transition: background 0.4s ease, color 0.4s ease; overflow-x: hidden; }
         
         .glass-card {
             background: rgba(255, 255, 255, 0.85);
@@ -75,12 +75,33 @@
             box-shadow: 0 10px 20px -5px rgba(217, 119, 6, 0.4);
             border-color: transparent;
         }
+
+        /* Scroll Reveal Animations (Smooth Slide from Left & Right) */
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-70px);
+            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(70px);
+            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-left.active, .reveal-right.active, .reveal-up.active {
+            opacity: 1;
+            transform: translateX(0) translateY(0);
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col bg-slate-50 text-slate-900 dark:bg-darkBg dark:text-slate-100 selection:bg-amber-500 selection:text-white">
 
     <!-- Header -->
-    <header class="glass-nav sticky top-0 z-50 px-6 lg:px-16 py-4 flex items-center justify-between transition-all">
+    <header class="glass-nav sticky top-0 z-50 px-6 lg:px-16 py-4 flex items-center justify-between transition-all reveal-up">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-slate-950 font-black shadow-lg shadow-amber-500/20">
                 <i class="fa-solid fa-car-side text-lg"></i>
@@ -101,7 +122,7 @@
     </header>
 
     <!-- Hero Section & Slider -->
-    <section class="relative min-h-[520px] lg:min-h-[580px] py-16 lg:py-24 overflow-hidden flex items-center justify-center text-center px-4 rounded-b-[40px] lg:rounded-b-[60px] shadow-2xl">
+    <section class="relative min-h-[520px] lg:min-h-[580px] py-16 lg:py-24 overflow-hidden flex items-center justify-center text-center px-4 rounded-b-[40px] lg:rounded-b-[60px] shadow-2xl reveal-up">
         <div class="absolute inset-0 z-0">
             <div class="slide active" style="background-image: linear-gradient(to bottom, rgba(3,7,18,0.5), rgba(3,7,18,0.85)), url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1920&q=85');"></div>
             <div class="slide" style="background-image: linear-gradient(to bottom, rgba(3,7,18,0.5), rgba(3,7,18,0.85)), url('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1920&q=85');"></div>
@@ -131,24 +152,24 @@
     </section>
 
     <!-- Stats Strip (Updated with TPE & Pass Jawaz) -->
-    <div class="max-w-7xl mx-auto px-4 -mt-8 relative z-20 w-full">
+    <div class="max-w-7xl mx-auto px-4 -mt-8 relative z-20 w-full reveal-up">
         <div class="glass-card p-6 lg:p-8 rounded-3xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center divide-y sm:divide-y-0 sm:divide-x divide-slate-200/50 dark:divide-slate-800">
-            <div class="space-y-2 pt-2 sm:pt-0">
+            <div class="space-y-2 pt-2 sm:pt-0 reveal-left" style="transition-delay: 100ms;">
                 <div class="w-12 h-12 mx-auto rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-lg"><i class="fa-solid fa-shield-halved"></i></div>
                 <h4 id="stat-1-title" class="text-xs font-bold uppercase tracking-wide">Véhicules Garantis</h4>
                 <p id="stat-1-desc" class="text-[11px] text-slate-500 dark:text-slate-400">Modèles récents et entretenus</p>
             </div>
-            <div class="space-y-2 pt-4 sm:pt-0">
+            <div class="space-y-2 pt-4 sm:pt-0 reveal-left" style="transition-delay: 200ms;">
                 <div class="w-12 h-12 mx-auto rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-lg"><i class="fa-solid fa-credit-card"></i></div>
                 <h4 id="stat-2-title" class="text-xs font-bold uppercase tracking-wide">Paiement par TPE</h4>
                 <p id="stat-2-desc" class="text-[11px] text-slate-500 dark:text-slate-400">Cartes bancaires acceptées</p>
             </div>
-            <div class="space-y-2 pt-4 sm:pt-0">
+            <div class="space-y-2 pt-4 sm:pt-0 reveal-right" style="transition-delay: 300ms;">
                 <div class="w-12 h-12 mx-auto rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-lg"><i class="fa-solid fa-road"></i></div>
                 <h4 id="stat-3-title" class="text-xs font-bold uppercase tracking-wide">Pass Jawaz</h4>
                 <p id="stat-3-desc" class="text-[11px] text-slate-500 dark:text-slate-400">Dispositif autoroute inclus</p>
             </div>
-            <div class="space-y-2 pt-4 sm:pt-0">
+            <div class="space-y-2 pt-4 sm:pt-0 reveal-right" style="transition-delay: 400ms;">
                 <div class="w-12 h-12 mx-auto rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-lg"><i class="fa-solid fa-headset"></i></div>
                 <h4 id="stat-4-title" class="text-xs font-bold uppercase tracking-wide">Support 24/7</h4>
                 <p id="stat-4-desc" class="text-[11px] text-slate-500 dark:text-slate-400">Assistance & tarifs transparents</p>
@@ -158,14 +179,14 @@
 
     <!-- Fleet Section -->
     <main id="fleet-section" class="max-w-7xl mx-auto px-4 lg:px-16 py-16 flex-grow w-full space-y-10">
-        <div class="text-center space-y-3">
+        <div class="text-center space-y-3 reveal-up">
             <span id="fleet-badge" class="px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-bold uppercase tracking-widest inline-block">Catalogue & Offres</span>
             <h3 class="text-2xl lg:text-4xl font-extrabold tracking-tight"><span id="fleet-title-1">Notre</span> <span id="fleet-title-2" class="text-amber-500">Flotte de Véhicules</span></h3>
             <p id="fleet-desc" class="text-xs lg:text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">Choisissez la formule idéale pour vos besoins particuliers ou professionnels.</p>
         </div>
 
         <!-- Filter Buttons -->
-        <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+        <div class="flex flex-wrap items-center justify-center gap-3 pt-2 reveal-up">
             <button onclick="filterFleet('personal')" id="filter-personal" class="filter-btn active px-6 py-3 rounded-2xl glass-card text-xs font-bold uppercase tracking-wider transition">
                 <i class="fa-solid fa-user ml-1 text-amber-500"></i> <span id="lbl-personal">Particulier</span>
             </button>
@@ -179,7 +200,7 @@
 
     <!-- Google Maps Reviews Section -->
     <section class="max-w-7xl mx-auto px-4 lg:px-16 py-8 w-full space-y-8">
-        <div class="flex flex-col md:flex-row items-center justify-between gap-6 glass-card p-8 rounded-3xl">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6 glass-card p-8 rounded-3xl reveal-left">
             <div class="flex items-center gap-5">
                 <div class="w-14 h-14 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center text-2xl shadow-lg shadow-amber-500/20">
                     <i class="fa-brands fa-google"></i>
@@ -201,7 +222,7 @@
     </section>
 
     <!-- Social Media Section (Added in the gap) -->
-    <section class="max-w-7xl mx-auto px-4 lg:px-16 py-4 w-full">
+    <section class="max-w-7xl mx-auto px-4 lg:px-16 py-4 w-full reveal-right">
         <div class="glass-card p-6 lg:p-8 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-lg">
@@ -221,9 +242,9 @@
     </section>
 
     <!-- Footer -->
-    <footer class="glass-card mt-12 pt-16 pb-10 px-6 lg:px-16 rounded-t-[40px] border-t border-slate-200/50 dark:border-slate-800 text-xs space-y-12">
+    <footer class="glass-card mt-12 pt-16 pb-10 px-6 lg:px-16 rounded-t-[40px] border-t border-slate-200/50 dark:border-slate-800 text-xs space-y-12 reveal-up">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div class="flex items-start gap-4">
+            <div class="flex items-start gap-4 reveal-left" style="transition-delay: 100ms;">
                 <div class="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0 text-base">
                     <i class="fa-regular fa-clock"></i>
                 </div>
@@ -232,7 +253,7 @@
                     <p id="open-status" class="text-slate-500 dark:text-slate-400 text-[11px] mt-1">Ouvert 9:00 • Fermé à 21:00</p>
                 </div>
             </div>
-            <div class="flex items-start gap-4">
+            <div class="flex items-start gap-4 reveal-left" style="transition-delay: 200ms;">
                 <div class="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0 text-base">
                     <i class="fa-solid fa-location-dot"></i>
                 </div>
@@ -241,7 +262,7 @@
                     <p class="text-slate-500 dark:text-slate-400 text-[11px] mt-1">Av. Moulay Abderrahmane, Kénitra</p>
                 </div>
             </div>
-            <div class="flex items-start gap-4">
+            <div class="flex items-start gap-4 reveal-right" style="transition-delay: 300ms;">
                 <div class="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0 text-base">
                     <i class="fa-solid fa-phone"></i>
                 </div>
@@ -250,7 +271,7 @@
                     <p class="text-amber-500 font-bold text-[11px] mt-1">+212 667-226721</p>
                 </div>
             </div>
-            <div class="flex items-start gap-4">
+            <div class="flex items-start gap-4 reveal-right" style="transition-delay: 400ms;">
                 <div class="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0 text-base">
                     <i class="fa-solid fa-headset"></i>
                 </div>
@@ -471,14 +492,34 @@
             ]
         };
 
+        function initScrollReveal() {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal-left, .reveal-right, .reveal-up').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
         function renderReviews() {
             const container = document.getElementById('reviews-container');
             if(!container) return;
             const revs = reviewsData[currentLang];
             container.innerHTML = '';
-            revs.forEach(rev => {
+            revs.forEach((rev, index) => {
+                const revealClass = index % 2 === 0 ? 'reveal-left' : 'reveal-right';
                 container.innerHTML += `
-                    <div class="glass-card p-6 rounded-3xl flex flex-col justify-between">
+                    <div class="glass-card p-6 rounded-3xl flex flex-col justify-between ${revealClass}" style="transition-delay: ${index * 150}ms;">
                         <div class="space-y-3">
                             <div class="flex items-center justify-between">
                                 <span class="font-extrabold text-xs uppercase tracking-wide">${rev.name}</span>
@@ -490,6 +531,7 @@
                     </div>
                 `;
             });
+            initScrollReveal();
         }
 
         async function fetchCars() {
@@ -523,7 +565,7 @@
             }
             container.innerHTML = '';
             
-            filteredCars.forEach(car => {
+            filteredCars.forEach((car, index) => {
                 const isReserved = car.status === 'reserved';
                 const statusBadge = isReserved 
                     ? `<span class="absolute top-4 left-4 bg-rose-500/90 backdrop-blur-md text-white text-[10px] px-3.5 py-1.5 rounded-full font-bold shadow-lg z-10 flex items-center gap-1"><i class="fa-solid fa-lock"></i> ${currentLang === 'ar' ? 'محجوزة' : 'Réservé'}</span>`
@@ -554,9 +596,12 @@
                 const availableLabel = currentLang === 'ar' ? 'متاح للحجز' : 'Disponible';
                 const reserveBtnText = currentLang === 'ar' ? 'حجز الآن' : 'Réserver';
                 const tiersJson = encodeURIComponent(JSON.stringify(car.pricing_tiers || []));
+                
+                // Alternate reveal direction for cards (left, up, right)
+                const revealClass = index % 3 === 0 ? 'reveal-left' : (index % 3 === 1 ? 'reveal-up' : 'reveal-right');
 
                 container.innerHTML += `
-                    <div class="glass-card rounded-3xl overflow-hidden flex flex-col justify-between group">
+                    <div class="glass-card rounded-3xl overflow-hidden flex flex-col justify-between group ${revealClass}" style="transition-delay: ${(index % 3) * 150}ms;">
                         <div>
                             <div class="h-52 relative overflow-hidden bg-slate-200 dark:bg-slate-900 cursor-pointer" onclick="openImageModal('${imageUrl}', '${safeCarName}')">
                                 <img src="${imageUrl}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110" onerror="this.src='https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1200&q=85'">
@@ -586,6 +631,7 @@
                     </div>
                 `;
             });
+            initScrollReveal();
         }
 
         function openBookingModal(carName, price1Day, tiersStr) {
@@ -993,6 +1039,7 @@
 
         renderReviews();
         fetchCars();
+        initScrollReveal();
     </script>
 </body>
 </html>
