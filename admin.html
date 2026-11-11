@@ -174,7 +174,7 @@
     <main class="main">
       <header class="topbar">
         <div><h1 id="pageTitle">الرئيسية</h1><p id="pageSubtitle">نظرة عامة على الموقع والأسطول ديالك.</p></div>
-        <div class="top-actions"><a class="btn btn-secondary" href="index.html" target="_blank" rel="noopener">عرض الموقع <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6m0-6-9 9"/><path d="M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6"/></svg></a><button class="btn btn-secondary" id="logout" type="button">خروج</button><span class="avatar" id="avatar">ك</span></div>
+        <div class="top-actions"><a class="btn btn-secondary" href="index.html" target="_blank" rel="noopener">عرض الموقع <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6m0-6-9 9"/><path d="M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6"/></svg></a><span class="avatar" id="avatar">ك</span></div>
       </header>
 
       <section class="page active" id="view-overview">
@@ -654,14 +654,6 @@
     document.getElementById("cancelVehicle").addEventListener("click", closeVehicle);
     document.getElementById("vehicleModal").addEventListener("click", event => { if (event.target.id === "vehicleModal") closeVehicle(); });
     document.getElementById("vehicleForm").addEventListener("submit", saveVehicle);
-    document.getElementById("logout").addEventListener("click", () => {
-      try {
-        localStorage.removeItem("kraylia-admin-authenticated");
-        location.replace("admin-login.html");
-      } catch (error) {
-        document.body.innerHTML = `<main style="max-width:560px;margin:12vh auto;padding:24px;font:700 16px Tajawal,sans-serif;text-align:center">${escapeHTML(error.message)}<br><a href="admin-login.html">الرجوع لتسجيل الدخول</a></main>`;
-      }
-    });
     document.getElementById("carImageFile").addEventListener("change", event => {
       const file = event.target.files[0];
       if (!file) return;
@@ -744,19 +736,9 @@
       }
     });
 
-    document.documentElement.style.visibility = "hidden";
-    try {
-      if (localStorage.getItem("kraylia-admin-authenticated") !== "1") {
-        location.replace("admin-login.html");
-      } else {
-        document.documentElement.style.visibility = "";
-        renderSettings();
-        renderDashboard();
-      }
-    } catch (error) {
-      document.documentElement.style.visibility = "";
-      document.body.innerHTML = `<main style="max-width:560px;margin:12vh auto;padding:24px;font:700 16px Tajawal,sans-serif;text-align:center">${escapeHTML(error.message)}<br><a href="admin-login.html">الرجوع لتسجيل الدخول</a></main>`;
-    }
+    document.documentElement.style.visibility = "";
+    renderSettings();
+    renderDashboard();
   </script>
 </body>
 </html>
