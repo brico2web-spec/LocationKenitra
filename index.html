@@ -1,0 +1,823 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8f8f5" id="themeColorMeta">
+  <meta name="description" content="كراء سيارات سهل وآمن في المغرب. اختار سيارتك، حدد الموعد، وأكد الحجز في دقائق.">
+  <title>كراي ليا — طريقك كيبدا من هنا</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Tajawal:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #17231d;
+      --muted: #707a73;
+      --green: #164b36;
+      --lime: #c9ef74;
+      --paper: #f8f8f5;
+      --line: #e8eae5;
+      --white: #fff;
+      --shadow: 0 18px 55px rgba(24, 48, 34, .1);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font-family: "Tajawal", sans-serif; }
+    button, input, select { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    .wrap { width: min(1160px, calc(100% - 48px)); margin-inline: auto; }
+    .topbar { height: 78px; display: flex; align-items: center; justify-content: space-between; gap: 28px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 900; letter-spacing: -.8px; }
+    .brand-mark { display: grid; place-items: center; width: 38px; height: 38px; color: var(--green); background: var(--lime); border-radius: 12px; }
+    .brand-mark svg { width: 23px; }
+    .brand-mark img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+    .nav { display: flex; align-items: center; gap: 33px; color: #536057; font-weight: 600; font-size: 15px; }
+    .nav a:hover, .footer a:hover { color: var(--green); }
+    .nav-actions { display: flex; gap: 10px; align-items: center; }
+    .language-toggle { border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; background: white; color: var(--green); font-size: 13px; font-weight: 800; }
+    .language-toggle:hover { background: #f0f4eb; }
+    .btn { border: 0; border-radius: 12px; padding: 12px 19px; font-weight: 700; transition: .2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:active { transform: scale(.96); }
+    .btn-dark { background: var(--green); color: white; }
+    .btn-dark:hover { background: #0e3928; }
+    .btn-light { background: white; color: var(--ink); border: 1px solid var(--line); }
+    .btn-lime { background: var(--lime); color: var(--ink); }
+    .btn-quiet { background: transparent; color: var(--ink); }
+    .icon { display: inline-block; flex: 0 0 auto; width: 18px; height: 18px; vertical-align: middle; }
+    .hero { position: relative; overflow: hidden; min-height: 514px; border-radius: 24px; background: #183728; color: white; display: flex; align-items: center; margin-bottom: 30px; }
+    .hero::before { content: ""; position: absolute; inset: 0; background: linear-gradient(270deg, rgba(15, 43, 29, .96) 3%, rgba(15, 43, 29, .76) 42%, rgba(15, 43, 29, .08) 100%), var(--hero-image) center 55%/cover; animation: hero-pan 24s ease-in-out infinite alternate; }
+    html[dir="ltr"] .hero::before { background: linear-gradient(90deg, rgba(15, 43, 29, .96) 3%, rgba(15, 43, 29, .76) 42%, rgba(15, 43, 29, .08) 100%), var(--hero-image) center 55%/cover; }
+    .hero::after { content: ""; position: absolute; width: 340px; height: 340px; left: 3%; top: -180px; border: 1px solid rgba(255,255,255,.16); border-radius: 50%; box-shadow: 0 0 0 42px rgba(255,255,255,.035), 0 0 0 84px rgba(255,255,255,.025); animation: halo-drift 9s ease-in-out infinite alternate; }
+    .hero-content { position: relative; z-index: 1; width: min(610px, 70%); padding: 70px 66px; animation: hero-content-in .8s cubic-bezier(.2,.7,.25,1) both; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: var(--lime); font-size: 14px; font-weight: 700; margin-bottom: 19px; }
+    .eyebrow::before { content: ""; width: 7px; height: 7px; background: var(--lime); border-radius: 50%; }
+    h1 { font-size: clamp(42px, 6vw, 68px); line-height: 1.17; letter-spacing: -1.6px; margin: 0 0 17px; font-weight: 900; }
+    h1 span { color: var(--lime); }
+    .hero-content p { color: #d7e0d9; font-size: 18px; margin: 0; max-width: 470px; line-height: 1.8; }
+    .hero-points { display: flex; gap: 22px; margin-top: 25px; color: #eef4ed; font-size: 14px; }
+    .hero-points span { display: flex; align-items: center; gap: 7px; }
+    .hero-points .icon { width: 17px; height: 17px; color: var(--lime); }
+    .booking-search { position: relative; z-index: 3; margin-top: -1px; background: white; border: 1px solid var(--line); box-shadow: var(--shadow); border-radius: 17px; padding: 16px; display: grid; grid-template-columns: 1.25fr 1fr 1fr auto; gap: 12px; }
+    .field { min-width: 0; }
+    .field label { display: block; color: var(--muted); font-size: 12px; font-weight: 700; margin: 0 0 5px 3px; }
+    .field input, .field select { width: 100%; min-height: 43px; padding: 8px 11px; border: 0; outline: 0; background: #f6f7f4; border-radius: 9px; color: var(--ink); }
+    .search-btn { min-width: 145px; align-self: end; min-height: 43px; }
+    .section { padding: 90px 0 5px; }
+    .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 25px; margin-bottom: 28px; }
+    .section-heading h2 { font-size: 36px; line-height: 1.25; margin: 0 0 7px; letter-spacing: -.7px; }
+    .section-heading p { color: var(--muted); margin: 0; font-size: 16px; }
+    .text-link { display: inline-flex; align-items: center; gap: 8px; color: var(--green); font-weight: 800; border: 0; background: transparent; padding: 8px 0; }
+    .filters { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 23px; }
+    .filter-chip { border: 1px solid var(--line); background: white; color: #505b53; border-radius: 99px; padding: 9px 17px; font-size: 14px; font-weight: 700; transition: .2s; }
+    .filter-chip:hover, .filter-chip.active { border-color: var(--green); color: white; background: var(--green); }
+    .car-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 19px; }
+    .car-card { min-width: 0; background: white; border: 1px solid #eeefeb; border-radius: 17px; padding: 12px; transition: border-color .2s ease, box-shadow .2s ease; }
+    .car-card:hover { border-color: #d3ddce; box-shadow: 0 8px 24px rgba(20,50,31,.07); }
+    .car-image { position: relative; height: 195px; border-radius: 12px; overflow: hidden; background: #edf0ea; }
+    .car-image img { width: 100%; height: 100%; object-fit: cover; }
+    .car-image-zoom { position:absolute; inset:0; width:100%; height:100%; padding:0; overflow:hidden; border:0; background:transparent; cursor:zoom-in; }
+    .car-image-zoom img { display:block; transition:transform .35s cubic-bezier(.2,.7,.25,1); }
+    .car-image-zoom:hover img { transform:scale(1.045); }
+    .image-zoom-indicator { position:absolute; z-index:1; bottom:10px; left:10px; display:grid; place-items:center; width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,.92); color:var(--green); box-shadow:0 3px 12px rgba(0,0,0,.15); pointer-events:none; }
+    .image-zoom-indicator .icon { width:17px; height:17px; }
+    .badge { position: absolute; top: 11px; right: 11px; padding: 6px 10px; color: var(--green); background: var(--lime); border-radius: 99px; font-size: 12px; font-weight: 800; pointer-events:none; }
+    .favorite { position: absolute; left: 10px; top: 10px; display: grid; place-items: center; border: 0; width: 37px; height: 37px; border-radius: 50%; background: rgba(255,255,255,.94); color: #303b33; box-shadow: 0 2px 8px rgba(0,0,0,.1); transition: .2s; }
+    .favorite:hover { transform: scale(1.08); color: #d54848; }
+    .favorite .icon { width: 19px; height: 19px; }
+    .favorite.selected { color: #d54848; }
+    .car-info { padding: 15px 4px 3px; }
+    .car-name-line { display: flex; align-items: start; justify-content: space-between; gap: 10px; }
+    .car-name-line h3 { margin: 0; font-size: 21px; }
+    .rating { display: inline-flex; align-items: center; gap: 4px; color: #8b6817; background: #fff8df; border-radius: 7px; padding: 5px 8px; font: 700 12px "DM Sans", sans-serif; direction: ltr; white-space: nowrap; }
+    .rating .icon { width: 13px; height: 13px; }
+    .car-subtitle { color: var(--muted); font-size: 13px; margin-top: 3px; }
+    .specs { display: flex; flex-wrap: wrap; gap: 15px; color: #5d675f; padding: 15px 0; margin-top: 12px; border-top: 1px solid #f0f1ed; border-bottom: 1px solid #f0f1ed; font-size: 13px; }
+    .specs span { display: inline-flex; align-items: center; gap: 6px; }
+    .specs .icon { width: 16px; height: 16px; color: #708075; }
+    .card-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 13px; }
+    .price { font: 800 21px "DM Sans", sans-serif; direction: ltr; }
+    .price small { font: 500 12px "Tajawal", sans-serif; color: var(--muted); }
+    .card-bottom .btn { padding: 9px 15px; font-size: 14px; }
+    .empty-state { grid-column: 1/-1; background: white; padding: 35px; text-align: center; border-radius: 14px; color: var(--muted); }
+    .pagination { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
+    .pagination[hidden] { display: none; }
+    .page-button { min-width: 40px; height: 40px; padding: 0 12px; border: 1px solid var(--line); border-radius: 11px; background: white; color: var(--ink); font-size: 14px; font-weight: 700; transition: background .2s, color .2s, border-color .2s; }
+    .page-button:hover:not(:disabled), .page-button.current { border-color: var(--green); background: var(--green); color: white; }
+    .page-button:disabled { cursor: not-allowed; opacity: .45; }
+    .page-status { color: var(--muted); font-size: 13px; margin-inline: 5px; }
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity .65s ease, transform .65s cubic-bezier(.2,.7,.25,1); }
+    .reveal.is-visible { opacity: 1; transform: translateY(0); }
+    .benefits { background: #edf1e9; margin-top: 90px; padding: 72px 0; }
+    .benefits .section-heading { align-items: center; }
+    .benefits-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+    .benefit { background: rgba(255,255,255,.75); border: 1px solid rgba(255,255,255,.8); border-radius: 15px; padding: 22px 19px; transition: transform .25s ease, box-shadow .25s ease; }
+    .benefit:hover { transform: translateY(-5px); box-shadow: 0 12px 28px rgba(24,48,34,.08); }
+    .benefit-icon { display: grid; place-items: center; width: 45px; height: 45px; border-radius: 14px; background: var(--lime); color: var(--green); margin-bottom: 17px; }
+    .benefit-icon .icon { width: 22px; height: 22px; }
+    .benefit h3 { margin: 0 0 7px; font-size: 18px; }
+    .benefit p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.7; }
+    .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 30px; }
+    .step { padding: 25px; border-right: 2px solid #dfe4da; }
+    .step-number { color: #86a155; font: 800 13px "DM Sans", sans-serif; }
+    .step h3 { font-size: 20px; margin: 8px 0; }
+    .step p { color: var(--muted); line-height: 1.7; margin: 0; }
+    .cta { margin-top: 85px; border-radius: 22px; background: var(--green); color: white; padding: 42px 48px; display: flex; align-items: center; justify-content: space-between; gap: 25px; }
+    .cta h2 { font-size: 30px; margin: 0 0 6px; }
+    .cta p { margin: 0; color: #cfdbd1; }
+    .footer { margin-top: 82px; padding: 36px 0; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 20px; color: var(--muted); font-size: 14px; }
+    .footer-links { display: flex; gap: 22px; }
+    .modal-backdrop { position: fixed; inset: 0; z-index: 20; background: rgba(12, 24, 16, .6); display: none; align-items: center; justify-content: center; padding: 20px; }
+    .modal-backdrop.open { display: flex; }
+    .modal { width: min(530px, 100%); max-height: min(92vh, 800px); overflow: auto; background: white; border-radius: 18px; padding: 26px; box-shadow: 0 25px 80px rgba(0,0,0,.25); animation: appear .18s ease-out; }
+    @keyframes appear { from { opacity: 0; transform: translateY(9px) scale(.99); } to { opacity: 1; transform: none; } }
+    .modal-head { display: flex; align-items: start; justify-content: space-between; gap: 15px; margin-bottom: 19px; }
+    .modal-head h2 { margin: 0 0 5px; font-size: 25px; }
+    .modal-head p { color: var(--muted); margin: 0; }
+    .close-modal { display: grid; place-items: center; width: 36px; height: 36px; background: #f1f3ef; border: 0; border-radius: 50%; font-size: 22px; }
+    .modal-car { display: flex; align-items: center; gap: 13px; background: #f5f7f2; border-radius: 12px; padding: 10px; margin-bottom: 17px; }
+    .modal-car img { width: 94px; height: 66px; border-radius: 8px; object-fit: cover; }
+    .modal-car b { display: block; font-size: 17px; }
+    .modal-car span { color: var(--muted); font-size: 13px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+    .form-grid .field.full { grid-column: 1/-1; }
+    .modal .field label { font-size: 13px; }
+    .modal .field input, .modal .field select { border: 1px solid var(--line); background: #fff; min-height: 46px; }
+    .modal-actions { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 20px; }
+    .modal-total { color: var(--muted); font-size: 13px; }
+    .modal-total strong { color: var(--ink); font: 800 19px "DM Sans", sans-serif; direction: ltr; display: block; margin-top: 2px; }
+    .image-lightbox { position:fixed; z-index:40; inset:0; display:none; align-items:center; justify-content:center; padding:24px; background:rgba(7,14,10,.88); backdrop-filter:blur(12px); }
+    .image-lightbox.open { display:flex; animation:appear .2s ease-out; }
+    .image-lightbox figure { position:relative; width:min(1100px,100%); max-height:100%; margin:0; overflow:hidden; border:1px solid rgba(255,255,255,.18); border-radius:20px; background:#101a14; box-shadow:0 28px 90px rgba(0,0,0,.45); }
+    .image-lightbox figure img { display:block; width:100%; max-height:82vh; object-fit:contain; }
+    .image-lightbox figcaption { display:flex; justify-content:space-between; align-items:center; gap:15px; padding:15px 19px; color:white; }
+    .image-lightbox figcaption strong { font-size:17px; }
+    .image-lightbox figcaption span { color:rgba(255,255,255,.72); font-size:13px; }
+    .image-lightbox-close { position:absolute; z-index:1; top:14px; right:14px; display:grid; place-items:center; width:42px; height:42px; border:1px solid rgba(255,255,255,.35); border-radius:50%; background:rgba(12,20,15,.68); color:white; cursor:pointer; backdrop-filter:blur(8px); }
+    .image-lightbox-close .icon { width:20px; height:20px; }
+    html[dir="ltr"] .image-lightbox-close { right:auto; left:14px; }
+    body.image-open { overflow:hidden; }
+    .confirmation { text-align: center; padding: 24px 8px 8px; }
+    .confirmation-icon { width: 64px; height: 64px; display: grid; place-items: center; margin: 0 auto 15px; background: #eaf5d9; color: var(--green); font-size: 30px; border-radius: 50%; }
+    .confirmation h2 { margin: 0 0 8px; font-size: 25px; }
+    .confirmation p { color: var(--muted); line-height: 1.8; margin: 0 0 20px; }
+    .toast { position: fixed; z-index: 30; bottom: 22px; left: 50%; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; background: #172b20; color: white; padding: 12px 19px; border-radius: 11px; box-shadow: var(--shadow); transition: .25s; font-weight: 600; }
+    .toast.show { transform: translate(-50%, 0); opacity: 1; }
+    @keyframes hero-pan { from { transform: scale(1); } to { transform: scale(1.055); } }
+    @keyframes halo-drift { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(20px, 18px, 0); } }
+    @keyframes hero-content-in { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+    @media (max-width: 850px) {
+      .nav { gap: 18px; }
+      .nav a:nth-child(3) { display: none; }
+      .hero-content { width: 82%; padding: 55px 38px; }
+      .booking-search { grid-template-columns: 1fr 1fr; }
+      .car-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .benefits-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 590px) {
+      .wrap { width: min(100% - 30px, 440px); }
+      .topbar { height: 68px; gap: 8px; }
+      .brand { font-size: 21px; }
+      .nav { display: none; }
+      .nav-actions { gap: 5px; }
+      .language-toggle { width: 36px; padding: 8px 4px; font-size: 11px; }
+      .nav-actions .btn { padding: 9px 8px; font-size: 12px; }
+      #favoritesNav { gap: 0; padding: 10px; }
+      #favoritesNav #navFavorites { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+      .hero { min-height: 490px; border-radius: 17px; }
+      .hero::before { background: linear-gradient(270deg, rgba(15,43,29,.94), rgba(15,43,29,.59)), var(--hero-image) 58% center/cover; }
+      .hero-content { width: 100%; padding: 45px 24px; }
+      h1 { font-size: 45px; }
+      .hero-content p { font-size: 16px; }
+      .hero-points { gap: 13px; flex-wrap: wrap; font-size: 12px; }
+      .booking-search { grid-template-columns: 1fr; padding: 13px; gap: 9px; }
+      .search-btn { width: 100%; }
+      .section { padding-top: 67px; }
+      .section-heading { align-items: start; flex-direction: column; gap: 10px; }
+      .section-heading h2 { font-size: 30px; }
+      .car-grid { grid-template-columns: 1fr; gap: 13px; }
+      .car-image { height: 210px; }
+      .benefits { margin-top: 65px; padding: 55px 0; }
+      .benefits-grid { grid-template-columns: 1fr 1fr; gap: 9px; }
+      .benefit { padding: 16px 13px; }
+      .benefit h3 { font-size: 16px; }
+      .benefit p { font-size: 12px; }
+      .how-grid { grid-template-columns: 1fr; gap: 7px; }
+      .step { padding: 14px 20px; }
+      .cta { margin-top: 60px; padding: 27px 22px; flex-direction: column; align-items: stretch; }
+      .cta h2 { font-size: 25px; }
+      .footer { margin-top: 54px; flex-direction: column; align-items: start; }
+      .footer-links { flex-wrap: wrap; gap: 14px; }
+      .modal { padding: 20px 16px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-grid .field.full { grid-column: auto; }
+      .modal-actions { align-items: end; }
+      .modal-actions .btn { padding: 11px 13px; }
+      .image-lightbox { padding: 10px; }
+      .image-lightbox figure { border-radius: 14px; }
+      .image-lightbox figure img { max-height: 76vh; }
+      .image-lightbox figcaption { align-items:flex-start; flex-direction:column; gap:3px; padding:12px 14px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="wrap topbar">
+    <a class="brand" href="#" aria-label="الصفحة الرئيسية">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3 14.5 5 9.2A2 2 0 0 1 6.9 8h10.2A2 2 0 0 1 19 9.2l2 5.3v4h-2v-2H5v2H3v-4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6 13h12M7.5 10.5h.01M16.5 10.5h.01" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></span>
+      <span class="brand-name">كراي ليا</span>
+    </a>
+    <nav class="nav" aria-label="القائمة الرئيسية">
+      <a href="#cars" id="navCars">السيارات</a><a href="#benefits" id="navBenefits">علاش حنا</a><a href="#how" id="navHow">كيفاش خدام</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="language-toggle" id="languageToggle" type="button" aria-label="تغيير لغة الموقع">Français</button>
+      <button class="btn btn-quiet" id="favoritesNav" type="button"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20.8 8.8c0 5.2-8.8 10-8.8 10s-8.8-4.8-8.8-10a4.7 4.7 0 0 1 8.8-2.2 4.7 4.7 0 0 1 8.8 2.2Z" stroke-linecap="round" stroke-linejoin="round"/></svg> <span id="navFavorites">المفضلة</span> <span id="favoriteCount"></span></button>
+      <a class="btn btn-dark" id="navBook" href="#cars"><span id="navBookText">بدا الحجز</span> <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M19 12H5m7 7-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <section class="hero" aria-labelledby="heroTitle">
+        <div class="hero-content">
+          <span class="eyebrow" id="heroEyebrow">كراء سيارات بلا تعقيدات</span>
+          <h1 id="heroTitle"><span id="heroTitleTop">طريقك كيبدا</span><br><span id="heroTitleBottom">من هنا.</span></h1>
+          <p id="heroDescription">سيارتك الجاية واجدة. اختار، حجز، وانطلق — بثمن واضح وخدمة كتعتمد عليها.</p>
+          <div class="hero-points"><span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6" stroke-linecap="round" stroke-linejoin="round"/></svg> <span data-hero-point="0">حجز ساهل</span></span><span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6" stroke-linecap="round" stroke-linejoin="round"/></svg> <span data-hero-point="1">أثمنة واضحة</span></span><span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6" stroke-linecap="round" stroke-linejoin="round"/></svg> <span data-hero-point="2">اختيارات متنوعة</span></span></div>
+        </div>
+      </section>
+
+      <form class="booking-search reveal" id="searchForm">
+        <div class="field"><label for="searchCity" id="searchCityLabel">فين غادي تاخدها؟</label><select id="searchCity"><option value="">جميع المدن</option></select></div>
+        <div class="field"><label for="searchStart" id="searchStartLabel">نهار الاستلام</label><input id="searchStart" type="date" required></div>
+        <div class="field"><label for="searchEnd" id="searchEndLabel">نهار الإرجاع</label><input id="searchEnd" type="date" required></div>
+        <button class="btn btn-dark search-btn" type="submit"><span id="searchButtonText">قلب على سيارة</span> <span aria-hidden="true">←</span></button>
+      </form>
+
+      <section class="section" id="cars">
+        <div class="section-heading">
+          <div><h2 id="fleetTitle">سيارات على قياسك</h2><p id="fleetIntro">اختار من بين سيارات مختارة بعناية، وبثمن واضح.</p><p id="resultsSummary" aria-live="polite"></p></div>
+          <button class="text-link" id="showAll" type="button"><span id="showAllText">شوف جميع السيارات</span> <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M19 12H5m7 7-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        </div>
+        <div class="filters" id="carFilters" role="group" aria-label="تصفية السيارات"></div>
+        <div class="car-grid" id="carGrid" aria-live="polite"></div>
+        <nav class="pagination" id="carPagination" aria-label="صفحات السيارات" hidden></nav>
+      </section>
+    </div>
+
+    <section class="benefits" id="benefits">
+      <div class="wrap">
+        <div class="section-heading reveal"><div><h2 id="benefitsTitle">راحة البال داخلة فالثمن</h2><p id="benefitsIntro">كلشي واضح من أول كليكة حتى ترجع المفتاح.</p></div></div>
+        <div class="benefits-grid">
+          <article class="benefit reveal"><div class="benefit-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3 14.7 8.4 20.7 9.3 16.4 13.5 17.4 19.5 12 16.7 6.6 19.5 7.6 13.5 3.3 9.3 9.3 8.4 12 3Z" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>ثمن بلا مفاجآت</h3><p>الثمن اللي كتشوف هو الثمن اللي كتخلص. ما كايناش مصاريف مخبية.</p></article>
+          <article class="benefit reveal"><div class="benefit-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="6" width="16" height="15" rx="2"/><path d="M8 3v6m8-6v6M4 11h16m-11 5 2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>حجز فدقايق</h3><p>اختار السيارة والتواريخ ديالك وكمل طلب الحجز بسهولة.</p></article>
+          <article class="benefit reveal"><div class="benefit-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.5"/></svg></div><h3>توصيل حتى لعندك</h3><p>اختار المدينة ونقطة الاستلام اللي كتناسبك.</p></article>
+          <article class="benefit reveal"><div class="benefit-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3 20 6v5c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-3Z" stroke-linecap="round" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>معلومات واضحة</h3><p>شوف مواصفات السيارة والثمن قبل ما تبدا طلب الحجز ديالك.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap section" id="how">
+      <div class="section-heading reveal"><div><h2 id="howTitle">من الاختيار للطريق، بسهولة</h2><p id="howIntro">ثلاث خطوات وتكون واجد تمشي.</p></div></div>
+      <div class="how-grid">
+        <article class="step"><span class="step-number">01 — <span>اختار</span></span><h3>لقا اللي كيناسبك</h3><p>قلب حسب المدينة ونوع السيارة، وقارن المواصفات والثمن.</p></article>
+        <article class="step"><span class="step-number">02 — <span>أكد</span></span><h3>دخل معلوماتك</h3><p>عمر بيانات التواصل والتواريخ باش نسجلو طلب الحجز ديالك.</p></article>
+        <article class="step"><span class="step-number">03 — <span>انطلق</span></span><h3>كمل التأكيد</h3><p>من بعد إرسال الطلب، خاص تأكيد التوفر والتفاصيل مع الجهة المكلفة بالكراء.</p></article>
+      </div>
+    </section>
+
+    <section class="wrap cta reveal">
+      <div><h2 id="ctaTitle">الرحلة الجاية؟ خليه علينا.</h2><p id="ctaDescription">قلب على السيارة المناسبة وانطلق مرتاح.</p></div>
+      <a class="btn btn-lime" href="#cars"><span id="ctaButtonText">اختار سيارتك</span> <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M19 12H5m7 7-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    </section>
+  </main>
+
+  <footer class="wrap footer">
+    <a class="brand" href="#"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M3 14.5 5 9.2A2 2 0 0 1 6.9 8h10.2A2 2 0 0 1 19 9.2l2 5.3v4h-2v-2H5v2H3v-4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6 13h12M7.5 10.5h.01M16.5 10.5h.01" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></span> <span class="brand-name">كراي ليا</span></a>
+    <div class="footer-links"><a href="#cars" id="footerCars">السيارات</a><a href="#benefits" id="footerBenefits">علاش حنا</a><a href="#how" id="footerHow">كيفاش خدام</a><a href="mailto:hello@kraylia.ma" id="footerContact">تواصل معنا</a></div>
+    <span>© <span id="year"></span> <span id="footerBrandName">كراي ليا</span>. <span id="footerCopyright">جميع الحقوق محفوظة.</span></span>
+  </footer>
+
+  <div class="modal-backdrop" id="bookingModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div id="bookingContent"></div>
+    </div>
+  </div>
+  <div class="image-lightbox" id="imageLightbox" role="dialog" aria-modal="true" aria-label="صورة السيارة">
+    <figure>
+      <button class="image-lightbox-close" id="closeImageLightbox" type="button" aria-label="إغلاق الصورة"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m18 6-12 12M6 6l12 12" stroke-linecap="round"/></svg></button>
+      <img id="lightboxImage" src="" alt="">
+      <figcaption><strong id="lightboxTitle"></strong><span id="lightboxCategory"></span></figcaption>
+    </figure>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="site-data.js"></script>
+  <script>
+    let siteConfig = KrayliaStore.readSite();
+    let cars = siteConfig.cars;
+    const grid = document.getElementById("carGrid");
+    const modal = document.getElementById("bookingModal");
+    const modalContent = document.getElementById("bookingContent");
+    const imageLightbox = document.getElementById("imageLightbox");
+    const favoriteKey = "kraylia-favorites";
+    const languageKey = "kraylia-language";
+    const frenchText = {
+      "السيارات":"Voitures","علاش حنا":"Pourquoi nous","كيفاش خدام":"Comment ça marche","المفضلة":"Favoris","بدا الحجز":"Réserver",
+      "الصفحة الرئيسية":"Accueil","كراء سيارات بلا تعقيدات":"La location de voiture, en toute simplicité",
+      "طريقك كيبدا":"Votre voyage","من هنا.":"commence ici.","سيارتك الجاية واجدة. اختار، حجز، وانطلق — بثمن واضح وخدمة كتعتمد عليها.":"Votre prochaine voiture vous attend. Choisissez, réservez et partez avec des prix transparents et un service fiable.",
+      "حجز ساهل":"Réservation facile","أثمنة واضحة":"Prix transparents","اختيارات متنوعة":"Un large choix","فين غادي تاخدها؟":"Où souhaitez-vous récupérer la voiture ?",
+      "جميع المدن":"Toutes les villes","نهار الاستلام":"Date de prise en charge","نهار الإرجاع":"Date de retour","قلب على سيارة":"Rechercher une voiture",
+      "سيارات على قياسك":"Des voitures faites pour vous","اختار من بين سيارات مختارة بعناية، وبثمن واضح.":"Choisissez parmi une sélection de voitures à des prix transparents.",
+      "شوف جميع السيارات":"Voir toutes les voitures","تصفية السيارات":"Filtrer les voitures","صفحات السيارات":"Pages des voitures",
+      "راحة البال داخلة فالثمن":"La tranquillité d’esprit est incluse","كلشي واضح من أول كليكة حتى ترجع المفتاح.":"Tout est clair, du premier clic jusqu’au retour des clés.",
+      "ثمن بلا مفاجآت":"Aucun frais caché","الثمن اللي كتشوف هو الثمن اللي كتخلص. ما كايناش مصاريف مخبية.":"Le prix affiché est le prix payé. Aucun frais caché.",
+      "حجز فدقايق":"Réservez en quelques minutes","اختار السيارة والتواريخ ديالك وكمل طلب الحجز بسهولة.":"Choisissez votre voiture et vos dates, puis envoyez facilement votre demande.",
+      "توصيل حتى لعندك":"Livraison à votre adresse","اختار المدينة ونقطة الاستلام اللي كتناسبك.":"Choisissez la ville et le lieu de prise en charge qui vous conviennent.",
+      "معلومات واضحة":"Des informations claires","شوف مواصفات السيارة والثمن قبل ما تبدا طلب الحجز ديالك.":"Consultez les caractéristiques et le prix avant d’envoyer votre demande.",
+      "من الاختيار للطريق، بسهولة":"De la réservation à la route, en toute simplicité","ثلاث خطوات وتكون واجد تمشي.":"Trois étapes et vous êtes prêt à partir.",
+      "اختار":"Choisir","لقا اللي كيناسبك":"Trouvez la voiture idéale","قلب حسب المدينة ونوع السيارة، وقارن المواصفات والثمن.":"Recherchez par ville et catégorie, puis comparez les caractéristiques et les prix.",
+      "أكد":"Confirmer","دخل معلوماتك":"Renseignez vos informations","عمر بيانات التواصل والتواريخ باش نسجلو طلب الحجز ديالك.":"Indiquez vos coordonnées et vos dates pour envoyer votre demande.",
+      "انطلق":"Partir","كمل التأكيد":"Finalisez la confirmation","من بعد إرسال الطلب، خاص تأكيد التوفر والتفاصيل مع الجهة المكلفة بالكراء.":"Après l’envoi, la disponibilité et les détails doivent être confirmés par le loueur.",
+      "الرحلة الجاية؟ خليه علينا.":"Et si on s’occupait de votre prochain voyage ?","قلب على السيارة المناسبة وانطلق مرتاح.":"Trouvez la voiture idéale et prenez la route en toute sérénité.",
+      "اختار سيارتك":"Choisissez votre voiture","تواصل معنا":"Contactez-nous","جميع الحقوق محفوظة.":"Tous droits réservés.",
+      "الكل":"Toutes","ما لقيناش سيارات بهاد الاختيارات.":"Aucune voiture ne correspond à ces critères.","مازال ما زدتي حتى سيارة للمفضلة.":"Vous n’avez pas encore ajouté de voiture aux favoris.",
+      "اقتصادية":"Économique","عائلية":"Familiale","فاخرة":"Luxe","الدار البيضاء":"Casablanca","الرباط":"Rabat","مراكش":"Marrakech","طنجة":"Tanger",
+      "بنزين":"Essence","ديزل":"Diesel","يدوية":"Manuelle","أوتوماتيك":"Automatique","الأكثر طلباً":"Les plus demandées","ثمن مناسب":"Prix avantageux",
+      "مناسبة للمغامرات":"Idéale pour l’aventure","اختيار ممتاز":"Excellent choix","راحة أكثر":"Plus de confort","تجربة فاخرة":"Expérience premium",
+      "مقاعد":"places","درهم":"DH"," / النهار":" / jour","حجز دابا":"Réserver","زيد للمفضلة":"Ajouter aux favoris","حيد من المفضلة":"Retirer des favoris",
+      "السابق":"Précédent","التالي":"Suivant","الصفحة":"Page","طلب حجز السيارة":"Demande de réservation","دخل معلوماتك باش نكملو الطلب ديالك.":"Renseignez vos informations pour continuer.",
+      "الاسم الكامل":"Nom complet","رقم الهاتف":"Téléphone","مدينة الاستلام":"Ville de prise en charge","اختار المدينة":"Choisissez une ville",
+      "طريقة الأداء المفضلة":"Mode de paiement souhaité","الأداء عند الاستلام":"Paiement à la prise en charge","بطاقة بنكية عند الاستلام":"Carte bancaire à la prise en charge",
+      "المجموع التقديري":"Total estimé","أكد طلب الحجز":"Envoyer la demande","واخا، شكراً":"D’accord, merci","الاسم والنسب":"Nom et prénom",
+      "خاص تاريخ الإرجاع يكون من بعد تاريخ الاستلام.":"La date de retour doit être postérieure à la date de prise en charge.",
+      "تضافات للمفضلة":"Ajouté aux favoris","تحيدات من المفضلة":"Retiré des favoris",
+      "ملاحظة: هاد النسخة ما مربوطةش بخادم؛ الطلب ما تصيفطش لجهة الكراء وما كيشكلش تأكيد فعلي للحجز.":"Remarque : cette version n’est pas reliée à un serveur. La demande n’est pas envoyée au loueur et ne constitue pas une confirmation de réservation.",
+      "اختار تاريخ إرجاع من بعد تاريخ الاستلام.":"Choisissez une date de retour postérieure à la date de prise en charge.",
+      "تسجل الطلب ديالك،":"Votre demande a bien été enregistrée,","تحفظ الطلب فهاد المتصفح بنجاح.":"La demande a bien été enregistrée dans ce navigateur.",
+      "تعذر حفظ الإعدادات. ممكن يكون تخزين المتصفح عامر.":"Impossible d’enregistrer les paramètres. Le stockage du navigateur est peut-être plein.",
+      "تعذر حفظ الطلبات فهاد المتصفح.":"Impossible d’enregistrer la demande dans ce navigateur.",
+      "كراي ليا — طريقك كيبدا من هنا":"Kraylia — votre voyage commence ici",
+      "كراء سيارات سهل وآمن في المغرب. اختار سيارتك، حدد الموعد، وأكد الحجز في دقائق.":"Location de voiture simple et sûre au Maroc. Choisissez votre voiture, vos dates et envoyez votre demande en quelques minutes.",
+      "صورة السيارة":"Photo du véhicule","إغلاق الصورة":"Fermer l’image","تكبير صورة السيارة":"Agrandir la photo du véhicule",
+      "إضافة مدينة":"Ajouter une ville","حذف المدينة":"Supprimer la ville","المدينة مرتبطة بسيارات. حذفها يزيلها من خيارات البحث والحجز فقط.":"Cette ville est liée à des véhicules. Sa suppression la retire uniquement des options de recherche et de réservation."
+    };
+    let currentLanguage = localStorage.getItem(languageKey) === "fr" ? "fr" : "ar";
+    const originalTextNodes = [];
+    const originalAttributes = [];
+    const textWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    while (textWalker.nextNode()) {
+      const node = textWalker.currentNode;
+      if (!["SCRIPT", "STYLE"].includes(node.parentElement?.tagName)) originalTextNodes.push([node, node.data]);
+    }
+    document.querySelectorAll("body *").forEach(element => {
+      ["placeholder", "aria-label", "title"].forEach(name => {
+        if (element.hasAttribute(name)) originalAttributes.push([element, name, element.getAttribute(name)]);
+      });
+    });
+    const fallbackLogo = document.querySelector(".brand-mark").innerHTML;
+    let activeCategory = "all";
+    let favoritesOnly = false;
+    let selectedCar = null;
+    let currentCarPage = 1;
+    const carsPerPage = 6;
+    let toastTimer;
+    const favorites = new Set(JSON.parse(localStorage.getItem(favoriteKey) || "[]"));
+    const todayISO = new Date().toISOString().slice(0, 10);
+    const tomorrowISO = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+    document.getElementById("year").textContent = new Date().getFullYear();
+    document.getElementById("searchStart").min = todayISO;
+    document.getElementById("searchEnd").min = tomorrowISO;
+    document.getElementById("searchStart").value = todayISO;
+    document.getElementById("searchEnd").value = tomorrowISO;
+
+    function setText(id, value) {
+      const element = document.getElementById(id);
+      if (element && typeof value === "string") element.textContent = localized(value);
+    }
+
+    function localized(value) {
+      return currentLanguage === "fr" ? (frenchText[value] || value) : value;
+    }
+
+    function setLanguage(language) {
+      currentLanguage = language;
+      document.documentElement.lang = language;
+      document.documentElement.dir = language === "fr" ? "ltr" : "rtl";
+      document.body.style.fontFamily = language === "fr" ? '"DM Sans", sans-serif' : '"Tajawal", sans-serif';
+      originalTextNodes.forEach(([node, original]) => {
+        const key = original.trim();
+        if (key) node.data = original.replace(key, localized(key));
+      });
+      originalAttributes.forEach(([element, name, original]) => element.setAttribute(name, localized(original)));
+      const toggle = document.getElementById("languageToggle");
+      toggle.textContent = language === "fr" ? "AR" : "FR";
+      toggle.setAttribute("aria-label", language === "fr" ? "Changer la langue du site" : "تغيير لغة الموقع");
+      applySiteSettings();
+      currentCarPage = 1;
+      renderCars();
+    }
+
+    function applyBrand() {
+      document.querySelectorAll(".brand-name, #footerBrandName").forEach(element => { element.textContent = siteConfig.brand.name; });
+      document.querySelectorAll(".brand").forEach(element => { element.setAttribute("aria-label", `${siteConfig.brand.name}، ${localized("الصفحة الرئيسية")}`); });
+      document.querySelectorAll(".brand-mark").forEach(mark => {
+        if (siteConfig.brand.logo) {
+          const image = document.createElement("img");
+          image.src = siteConfig.brand.logo;
+          image.alt = "";
+          mark.replaceChildren(image);
+        } else {
+          mark.innerHTML = fallbackLogo;
+        }
+      });
+      document.title = localized(siteConfig.seo.title || siteConfig.brand.name);
+      document.querySelector('meta[name="description"]').content = localized(siteConfig.seo.description);
+      document.getElementById("themeColorMeta").content = siteConfig.theme.paper;
+    }
+
+    function renderCityOptions() {
+      const select = document.getElementById("searchCity");
+      const currentCity = select.value;
+      const cities = [...siteConfig.pickupCities].sort((a, b) => localized(a).localeCompare(localized(b), currentLanguage));
+      select.replaceChildren(new Option(localized(siteConfig.search.allCities), ""), ...cities.map(city => new Option(localized(city), city)));
+      if (cities.includes(currentCity)) select.value = currentCity;
+    }
+
+    function renderCategoryFilters() {
+      const filters = document.getElementById("carFilters");
+      const categories = [...new Set(cars.filter(car => car.available !== false).map(car => car.category).filter(Boolean))];
+      if (activeCategory !== "all" && !categories.includes(activeCategory)) activeCategory = "all";
+      filters.innerHTML = `<button class="filter-chip ${activeCategory === "all" ? "active" : ""}" data-category="all" type="button">${escapeHTML(localized(siteConfig.fleet.allCategories))}</button>${categories.map(category => `<button class="filter-chip ${activeCategory === category ? "active" : ""}" data-category="${escapeHTML(category)}" type="button">${escapeHTML(localized(category))}</button>`).join("")}`;
+    }
+
+    function applySiteSettings() {
+      const { brand, theme, seo, hero, search, fleet, benefits, how, booking, nav, cta, footer } = siteConfig;
+      const colors = { green: theme.green, lime: theme.lime, paper: theme.paper };
+      Object.entries(colors).forEach(([name, value]) => {
+        if (/^#[0-9a-f]{6}$/i.test(value)) document.documentElement.style.setProperty(`--${name}`, value);
+      });
+      const heroImage = /^https?:\/\//i.test(hero.image) ? hero.image : KrayliaStore.defaultConfig.hero.image;
+      document.documentElement.style.setProperty("--hero-image", `url("${heroImage.replace(/["\\\n\r]/g, "")}")`);
+      applyBrand();
+      setText("heroEyebrow", hero.eyebrow);
+      setText("heroTitleTop", hero.titleTop);
+      setText("heroTitleBottom", hero.titleBottom);
+      setText("heroDescription", hero.description);
+      document.querySelectorAll("[data-hero-point]").forEach((element, index) => { element.textContent = localized(hero.points[index] || ""); });
+      setText("searchCityLabel", search.cityLabel);
+      setText("searchStartLabel", search.startLabel);
+      setText("searchEndLabel", search.endLabel);
+      setText("searchButtonText", search.button);
+      setText("navCars", nav.cars);
+      setText("navBenefits", nav.benefits);
+      setText("navHow", nav.how);
+      setText("navFavorites", nav.favorites);
+      setText("navBookText", nav.book);
+      setText("fleetAllCategories", fleet.allCategories);
+      setText("fleetTitle", fleet.title);
+      setText("fleetIntro", fleet.intro);
+      setText("showAllText", fleet.showAll);
+      setText("benefitsTitle", benefits.title);
+      setText("benefitsIntro", benefits.intro);
+      document.querySelectorAll(".benefit").forEach((element, index) => {
+        const item = benefits.items[index];
+        if (!item) return;
+        setTextWithin(element, "h3", item.title);
+        setTextWithin(element, "p", item.description);
+      });
+      setText("howTitle", how.title);
+      setText("howIntro", how.intro);
+      document.querySelectorAll(".step").forEach((element, index) => {
+        const item = how.steps[index];
+        if (!item) return;
+        const label = element.querySelector(".step-number span");
+        if (label) label.textContent = localized(item.label);
+        setTextWithin(element, "h3", localized(item.title));
+        setTextWithin(element, "p", localized(item.description));
+      });
+      setText("ctaTitle", cta.title);
+      setText("ctaDescription", cta.description);
+      setText("ctaButtonText", cta.button);
+      setText("footerCars", footer.cars);
+      setText("footerBenefits", footer.benefits);
+      setText("footerHow", footer.how);
+      setText("footerContact", footer.contact);
+      setText("footerCopyright", footer.copyright);
+      const contactLink = document.getElementById("footerContact");
+      contactLink.href = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(brand.contactEmail) ? `mailto:${brand.contactEmail}` : "#";
+      renderCityOptions();
+      renderCategoryFilters();
+    }
+
+    function setTextWithin(parent, selector, value) {
+      const element = parent.querySelector(selector);
+      if (element && typeof value === "string") element.textContent = localized(value);
+    }
+
+    function validImageUrl(value) {
+      if (/^data:image\/(?:jpeg|png|webp);base64,/i.test(value)) return value;
+      try {
+        const url = new URL(value);
+        return ["https:", "http:"].includes(url.protocol) ? url.href : KrayliaStore.defaultCars[0].image;
+      } catch {
+        return KrayliaStore.defaultCars[0].image;
+      }
+    }
+
+    applySiteSettings();
+
+    const revealElements = document.querySelectorAll(".reveal");
+    if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      const revealObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      revealElements.forEach(element => revealObserver.observe(element));
+    } else {
+      revealElements.forEach(element => element.classList.add("is-visible"));
+    }
+
+    function icon(name, size = 18, filled = false) {
+      const paths = {
+        heart: '<path d="M20.8 8.8c0 5.2-8.8 10-8.8 10s-8.8-4.8-8.8-10a4.7 4.7 0 0 1 8.8-2.2 4.7 4.7 0 0 1 8.8 2.2Z" stroke-linecap="round" stroke-linejoin="round"/>',
+        star: '<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z" stroke-linecap="round" stroke-linejoin="round"/>',
+        users: '<path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20m6-9a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm6-6.5a3.5 3.5 0 0 1 0 6.8m2 3.2a3.5 3.5 0 0 1 2 3.2V20" stroke-linecap="round" stroke-linejoin="round"/>',
+        gear: '<circle cx="12" cy="12" r="3"/><path d="m19.4 15 .1.1 1.1.9-1.2 2.1-1.4-.5a7.8 7.8 0 0 1-1.5.9l-.2 1.5h-2.5l-.3-1.5a7.8 7.8 0 0 1-1.5-.9l-1.4.5-1.2-2.1 1.1-.9a7 7 0 0 1 0-1.8l-1.1-.9 1.2-2.1 1.4.5a7.8 7.8 0 0 1 1.5-.9l.3-1.5h2.5l.2 1.5a7.8 7.8 0 0 1 1.5.9l1.4-.5 1.2 2.1-1.1.9a7 7 0 0 1 0 1.8Z" stroke-linecap="round" stroke-linejoin="round"/>',
+        fuel: '<path d="M4 21V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v16M3 21h13M6 7h7m6 2 2 2v7a2 2 0 0 1-4 0v-4h-2" stroke-linecap="round" stroke-linejoin="round"/>',
+        arrow: '<path d="M19 12H5m7 7-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/>',
+        zoom: '<circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5M10.8 7.5v6.6m-3.3-3.3h6.6"/>',
+        close: '<path d="m18 6-12 12M6 6l12 12" stroke-linecap="round"/>'
+      };
+      return `<svg class="icon" width="${size}" height="${size}" viewBox="0 0 24 24" fill="${filled ? "currentColor" : "none"}" stroke="currentColor" stroke-width="1.8" aria-hidden="true">${paths[name]}</svg>`;
+    }
+
+    function renderCars() {
+      const city = document.getElementById("searchCity").value;
+      const filtered = cars.filter(car =>
+        car.available !== false &&
+        (activeCategory === "all" || car.category === activeCategory) &&
+        (!city || car.city === city) &&
+        (!favoritesOnly || favorites.has(car.id))
+      );
+      const pageCount = Math.ceil(filtered.length / carsPerPage);
+      currentCarPage = Math.min(currentCarPage, Math.max(pageCount, 1));
+      const visibleCars = filtered.slice((currentCarPage - 1) * carsPerPage, currentCarPage * carsPerPage);
+      grid.innerHTML = filtered.length ? visibleCars.map(car => `
+        <article class="car-card">
+          <div class="car-image">
+            <button type="button" class="car-image-zoom" data-image-zoom="${escapeHTML(car.id)}" aria-label="${escapeHTML(localized("تكبير صورة السيارة"))}: ${escapeHTML(car.name)}"><img src="${escapeHTML(validImageUrl(car.image))}" alt="${escapeHTML(localized(car.alt))}" loading="lazy" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=900&q=80'"></button>
+            <span class="image-zoom-indicator" aria-hidden="true">${icon("zoom")}</span>
+            <span class="badge">${escapeHTML(localized(car.badge || car.category))}</span>
+            <button type="button" class="favorite ${favorites.has(car.id) ? "selected" : ""}" data-favorite="${escapeHTML(car.id)}" aria-label="${escapeHTML(localized(favorites.has(car.id) ? "حيد من المفضلة" : "زيد للمفضلة"))}" aria-pressed="${favorites.has(car.id)}">${icon("heart", 19, favorites.has(car.id))}</button>
+          </div>
+          <div class="car-info">
+            <div class="car-name-line"><div><h3>${escapeHTML(car.name)}</h3><div class="car-subtitle">${escapeHTML(localized(car.category))}</div></div><span class="rating">${icon("star", 13, true)} ${escapeHTML(car.rating)}</span></div>
+            <div class="specs"><span>${icon("users", 16)} ${escapeHTML(car.seats)} ${escapeHTML(localized("مقاعد"))}</span><span>${icon("gear", 16)} ${escapeHTML(localized(car.transmission))}</span><span>${icon("fuel", 16)} ${escapeHTML(localized(car.fuel))}</span></div>
+            <div class="card-bottom"><div><span class="price">${Number(car.price).toLocaleString("fr-MA")} <small>${escapeHTML(localized("درهم"))}</small></span><small>${escapeHTML(localized(" / النهار"))}</small></div><button type="button" class="btn btn-dark" data-book="${escapeHTML(car.id)}">${escapeHTML(localized("حجز دابا"))} ${icon("arrow")}</button></div>
+          </div>
+        </article>`).join("") : `<div class="empty-state">${escapeHTML(favoritesOnly ? siteConfig.fleet.emptyFavorites : siteConfig.fleet.empty)}</div>`;
+      document.getElementById("favoriteCount").textContent = favorites.size ? `(${favorites.size})` : "";
+      document.getElementById("resultsSummary").textContent = favoritesOnly
+        ? (currentLanguage === "fr" ? `${filtered.length} voitures dans vos favoris.` : `كاينين ${filtered.length} سيارات فالمفضلة ديالك.`)
+        : filtered.length
+          ? (currentLanguage === "fr" ? `${filtered.length} voitures disponibles. Choisissez celle qui vous convient.` : `كاينين ${filtered.length} سيارات متوفرين. اختار السيارة اللي كتناسبك.`)
+          : localized("ما لقيناش سيارات بهاد الاختيارات.");
+      renderCarPagination(pageCount);
+      grid.querySelectorAll("[data-favorite]").forEach(button => button.addEventListener("click", () => toggleFavorite(button.dataset.favorite)));
+      grid.querySelectorAll("[data-book]").forEach(button => button.addEventListener("click", () => openBooking(button.dataset.book)));
+      grid.querySelectorAll("[data-image-zoom]").forEach(button => button.addEventListener("click", () => openCarImage(button.dataset.imageZoom)));
+    }
+
+    function renderCarPagination(pageCount) {
+      const pagination = document.getElementById("carPagination");
+      pagination.hidden = pageCount <= 1;
+      if (pageCount <= 1) {
+        pagination.replaceChildren();
+        return;
+      }
+
+      pagination.innerHTML = `
+        <button class="page-button" type="button" data-page="${currentCarPage - 1}" ${currentCarPage === 1 ? "disabled" : ""}>${localized("السابق")}</button>
+        ${Array.from({ length: pageCount }, (_, index) => {
+          const page = index + 1;
+          return `<button class="page-button ${page === currentCarPage ? "current" : ""}" type="button" data-page="${page}" aria-label="${localized("الصفحة")} ${page}" aria-current="${page === currentCarPage ? "page" : "false"}">${page}</button>`;
+        }).join("")}
+        <span class="page-status">${localized("الصفحة")} ${currentCarPage} ${currentLanguage === "fr" ? "sur" : "من"} ${pageCount}</span>
+        <button class="page-button" type="button" data-page="${currentCarPage + 1}" ${currentCarPage === pageCount ? "disabled" : ""}>${localized("التالي")}</button>`;
+
+      pagination.querySelectorAll("[data-page]").forEach(button => {
+        button.addEventListener("click", () => {
+          const nextPage = Number(button.dataset.page);
+          if (nextPage < 1 || nextPage > pageCount || nextPage === currentCarPage) return;
+          currentCarPage = nextPage;
+          renderCars();
+          document.getElementById("cars").scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
+    }
+
+    function toggleFavorite(id) {
+      if (favorites.has(id)) favorites.delete(id); else favorites.add(id);
+      localStorage.setItem(favoriteKey, JSON.stringify([...favorites]));
+      currentCarPage = 1;
+      renderCars();
+      showToast(localized(favorites.has(id) ? "تضافات للمفضلة" : "تحيدات من المفضلة"));
+    }
+
+    function openCarImage(id) {
+      const car = cars.find(item => item.id === id);
+      if (!car) return;
+      document.getElementById("lightboxImage").src = validImageUrl(car.image);
+      document.getElementById("lightboxImage").alt = localized(car.alt || car.name);
+      document.getElementById("lightboxTitle").textContent = car.name;
+      document.getElementById("lightboxCategory").textContent = localized(car.category);
+      imageLightbox.setAttribute("aria-label", `${localized("صورة السيارة")}: ${car.name}`);
+      imageLightbox.classList.add("open");
+      document.body.classList.add("image-open");
+      document.getElementById("closeImageLightbox").focus();
+    }
+
+    function closeCarImage() {
+      imageLightbox.classList.remove("open");
+      document.body.classList.remove("image-open");
+      document.getElementById("lightboxImage").removeAttribute("src");
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = localized(message);
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
+    }
+
+    function rentalDays(start, end) {
+      const days = Math.ceil((new Date(`${end}T00:00:00`) - new Date(`${start}T00:00:00`)) / 86400000);
+      return Math.max(days, 1);
+    }
+
+    function openBooking(id) {
+      selectedCar = cars.find(car => car.id === id);
+      if (!selectedCar) return;
+      const start = document.getElementById("searchStart").value || todayISO;
+      const end = document.getElementById("searchEnd").value || tomorrowISO;
+      modalContent.innerHTML = `
+        <div class="modal-head"><div><h2 id="modalTitle">${escapeHTML(localized(siteConfig.booking.title))}</h2><p>${escapeHTML(localized(siteConfig.booking.intro))}</p></div><button class="close-modal" type="button" aria-label="${currentLanguage === "fr" ? "Fermer" : "إغلاق"}">${icon("close", 19)}</button></div>
+        <div class="modal-car"><img src="${escapeHTML(validImageUrl(selectedCar.image))}" alt=""><div><b>${escapeHTML(selectedCar.name)}</b><span>${escapeHTML(localized(selectedCar.city))} · ${Number(selectedCar.price).toLocaleString("fr-MA")} ${escapeHTML(localized("درهم"))} ${escapeHTML(localized(" / النهار"))}</span></div></div>
+        <form id="bookingForm">
+          <div class="form-grid">
+            <div class="field full"><label for="customerName">${escapeHTML(localized(siteConfig.booking.name))}</label><input id="customerName" name="name" autocomplete="name" required minlength="2" placeholder="${localized("الاسم والنسب")}"></div>
+            <div class="field"><label for="customerPhone">${escapeHTML(localized(siteConfig.booking.phone))}</label><input id="customerPhone" name="phone" type="tel" autocomplete="tel" required pattern="[0-9+ ]{8,18}" placeholder="06 00 00 00 00"></div>
+            <div class="field"><label for="pickupCity">${escapeHTML(localized(siteConfig.booking.city))}</label><select id="pickupCity" name="city" required><option value="">${escapeHTML(localized(siteConfig.booking.chooseCity))}</option>${siteConfig.pickupCities.map(city => `<option value="${escapeHTML(city)}" ${city === selectedCar.city ? "selected" : ""}>${escapeHTML(localized(city))}</option>`).join("")}</select></div>
+            <div class="field"><label for="bookingStart">${escapeHTML(localized(siteConfig.booking.start))}</label><input id="bookingStart" name="start" type="date" value="${start}" min="${todayISO}" required></div>
+            <div class="field"><label for="bookingEnd">${escapeHTML(localized(siteConfig.booking.end))}</label><input id="bookingEnd" name="end" type="date" value="${end}" min="${tomorrowISO}" required></div>
+            <div class="field full"><label for="payment">${escapeHTML(localized(siteConfig.booking.payment))}</label><select id="payment" name="payment"><option>${escapeHTML(localized(siteConfig.booking.cash))}</option><option>${escapeHTML(localized(siteConfig.booking.card))}</option></select></div>
+          </div>
+          <div class="modal-actions"><div class="modal-total">${escapeHTML(localized(siteConfig.booking.total))}<strong id="bookingTotal">${selectedCar.price} ${escapeHTML(localized("درهم"))}</strong></div><button class="btn btn-dark" type="submit">${escapeHTML(localized(siteConfig.booking.submit))} ${icon("arrow")}</button></div>
+        </form>`;
+      modal.classList.add("open");
+      modalContent.querySelector(".close-modal").addEventListener("click", closeBooking);
+      const startInput = document.getElementById("bookingStart");
+      const endInput = document.getElementById("bookingEnd");
+      const updateTotal = () => {
+        endInput.min = startInput.value > todayISO ? new Date(new Date(`${startInput.value}T00:00:00`).getTime() + 86400000).toISOString().slice(0, 10) : tomorrowISO;
+        if (endInput.value < endInput.min) endInput.value = endInput.min;
+        document.getElementById("bookingTotal").textContent = `${selectedCar.price * rentalDays(startInput.value, endInput.value)} ${localized("درهم")}`;
+      };
+      startInput.addEventListener("change", updateTotal);
+      endInput.addEventListener("change", updateTotal);
+      updateTotal();
+      document.getElementById("bookingForm").addEventListener("submit", submitBooking);
+      document.getElementById("customerName").focus();
+    }
+
+    function submitBooking(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      if (!form.reportValidity()) return;
+      const data = Object.fromEntries(new FormData(form).entries());
+      if (data.end <= data.start) {
+        document.getElementById("bookingEnd").setCustomValidity(localized("خاص تاريخ الإرجاع يكون من بعد تاريخ الاستلام."));
+        document.getElementById("bookingEnd").reportValidity();
+        document.getElementById("bookingEnd").setCustomValidity("");
+        return;
+      }
+      const booking = {
+        reference: `KL-${Date.now().toString().slice(-7)}`,
+        car: selectedCar.name,
+        carId: selectedCar.id,
+        name: data.name.trim(),
+        phone: data.phone.trim(),
+        city: data.city,
+        start: data.start,
+        end: data.end,
+        payment: data.payment,
+        total: selectedCar.price * rentalDays(data.start, data.end),
+        status: "pending",
+        createdAt: new Date().toISOString()
+      };
+      const bookings = KrayliaStore.readBookings();
+      bookings.push(booking);
+      try {
+        KrayliaStore.saveBookings(bookings);
+      } catch (error) {
+        showToast(error.message);
+        return;
+      }
+      modalContent.innerHTML = `<div class="confirmation"><div class="confirmation-icon">✓</div><h2 id="modalTitle">${escapeHTML(localized("تسجل الطلب ديالك،"))} ${escapeHTML(booking.name)}!</h2><p>${escapeHTML(localized("تحفظ الطلب فهاد المتصفح بنجاح."))}<br>${currentLanguage === "fr" ? "Référence :" : "رقم الطلب:"} <strong>${escapeHTML(booking.reference)}</strong><br>${escapeHTML(booking.car)} · ${booking.total} ${escapeHTML(localized("درهم"))} · ${escapeHTML(localized(booking.city))}<br><small>${escapeHTML(localized("ملاحظة: هاد النسخة ما مربوطةش بخادم؛ الطلب ما تصيفطش لجهة الكراء وما كيشكلش تأكيد فعلي للحجز."))}</small></p><button class="btn btn-dark" type="button" id="doneBooking">${escapeHTML(localized(siteConfig.booking.done))}</button></div>`;
+      document.getElementById("doneBooking").addEventListener("click", closeBooking);
+    }
+
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+    }
+
+    function closeBooking() {
+      modal.classList.remove("open");
+      selectedCar = null;
+    }
+
+    document.getElementById("carFilters").addEventListener("click", event => {
+      const button = event.target.closest("[data-category]");
+      if (!button) return;
+      activeCategory = button.dataset.category;
+      favoritesOnly = false;
+      currentCarPage = 1;
+      renderCategoryFilters();
+      renderCars();
+    });
+    document.getElementById("showAll").addEventListener("click", () => {
+      activeCategory = "all";
+      favoritesOnly = false;
+      currentCarPage = 1;
+      document.getElementById("searchCity").value = "";
+      renderCategoryFilters();
+      renderCars();
+    });
+    document.getElementById("favoritesNav").addEventListener("click", () => {
+      favoritesOnly = !favoritesOnly;
+      activeCategory = "all";
+      currentCarPage = 1;
+      renderCategoryFilters();
+      renderCars();
+      document.getElementById("cars").scrollIntoView({ behavior: "smooth" });
+    });
+    document.getElementById("searchForm").addEventListener("submit", event => {
+      event.preventDefault();
+      const start = document.getElementById("searchStart");
+      const end = document.getElementById("searchEnd");
+      if (!start.value || !end.value || end.value <= start.value) {
+        end.setCustomValidity(localized("اختار تاريخ إرجاع من بعد تاريخ الاستلام."));
+        end.reportValidity();
+        end.setCustomValidity("");
+        return;
+      }
+      favoritesOnly = false;
+      activeCategory = "all";
+      currentCarPage = 1;
+      renderCategoryFilters();
+      renderCars();
+      document.getElementById("cars").scrollIntoView({ behavior: "smooth" });
+    });
+    document.getElementById("searchStart").addEventListener("change", event => {
+      const end = document.getElementById("searchEnd");
+      end.min = new Date(new Date(`${event.target.value}T00:00:00`).getTime() + 86400000).toISOString().slice(0, 10);
+      if (end.value < end.min) end.value = end.min;
+    });
+    window.addEventListener("storage", event => {
+      if (event.key !== KrayliaStore.siteKey) return;
+      siteConfig = KrayliaStore.readSite();
+      cars = siteConfig.cars;
+      currentCarPage = 1;
+      applySiteSettings();
+      renderCars();
+    });
+    document.getElementById("languageToggle").addEventListener("click", () => {
+      const language = currentLanguage === "ar" ? "fr" : "ar";
+      localStorage.setItem(languageKey, language);
+      if (modal.classList.contains("open")) closeBooking();
+      setLanguage(language);
+    });
+    modal.addEventListener("click", event => { if (event.target === modal) closeBooking(); });
+    document.getElementById("closeImageLightbox").addEventListener("click", closeCarImage);
+    imageLightbox.addEventListener("click", event => { if (event.target === imageLightbox) closeCarImage(); });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && modal.classList.contains("open")) closeBooking();
+      if (event.key === "Escape" && imageLightbox.classList.contains("open")) closeCarImage();
+    });
+    setLanguage(currentLanguage);
+  </script>
+</body>
+</html>
