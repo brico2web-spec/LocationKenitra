@@ -62,42 +62,45 @@
     return JSON.parse(JSON.stringify(value));
   }
 
+  function normalizeSite(value) {
+    if (!value || typeof value !== "object" || Array.isArray(value)) return clone(defaultConfig);
+    return {
+      ...clone(defaultConfig),
+      ...value,
+      brand: { ...defaultConfig.brand, ...value.brand },
+      theme: { ...defaultConfig.theme, ...value.theme },
+      seo: { ...defaultConfig.seo, ...value.seo },
+      nav: { ...defaultConfig.nav, ...value.nav },
+      hero: { ...defaultConfig.hero, ...value.hero },
+      pickupCities: Array.isArray(value.pickupCities)
+        ? [...new Set(value.pickupCities.filter(city => typeof city === "string" && city.trim()).map(city => city.trim()))]
+        : clone(defaultConfig.pickupCities),
+      search: { ...defaultConfig.search, ...value.search },
+      fleet: { ...defaultConfig.fleet, ...value.fleet },
+      benefits: {
+        ...defaultConfig.benefits, ...value.benefits,
+        items: Array.isArray(value.benefits?.items)
+          ? defaultConfig.benefits.items.map((item, index) => ({ ...item, ...value.benefits.items[index] }))
+          : clone(defaultConfig.benefits.items)
+      },
+      how: {
+        ...defaultConfig.how, ...value.how,
+        steps: Array.isArray(value.how?.steps)
+          ? defaultConfig.how.steps.map((step, index) => ({ ...step, ...value.how.steps[index] }))
+          : clone(defaultConfig.how.steps)
+      },
+      booking: { ...defaultConfig.booking, ...value.booking },
+      cta: { ...defaultConfig.cta, ...value.cta },
+      footer: { ...defaultConfig.footer, ...value.footer },
+      cars: Array.isArray(value.cars) ? value.cars : clone(defaultCars)
+    };
+  }
+
   function readSite() {
     try {
       const saved = localStorage.getItem(siteKey);
       if (!saved) return clone(defaultConfig);
-      const value = JSON.parse(saved);
-      if (!value || typeof value !== "object") return clone(defaultConfig);
-      return {
-        ...clone(defaultConfig),
-        ...value,
-        brand: { ...defaultConfig.brand, ...value.brand },
-        theme: { ...defaultConfig.theme, ...value.theme },
-        seo: { ...defaultConfig.seo, ...value.seo },
-        nav: { ...defaultConfig.nav, ...value.nav },
-        hero: { ...defaultConfig.hero, ...value.hero },
-        pickupCities: Array.isArray(value.pickupCities)
-          ? [...new Set(value.pickupCities.filter(city => typeof city === "string" && city.trim()).map(city => city.trim()))]
-          : clone(defaultConfig.pickupCities),
-        search: { ...defaultConfig.search, ...value.search },
-        fleet: { ...defaultConfig.fleet, ...value.fleet },
-        benefits: {
-          ...defaultConfig.benefits, ...value.benefits,
-          items: Array.isArray(value.benefits?.items)
-            ? defaultConfig.benefits.items.map((item, index) => ({ ...item, ...value.benefits.items[index] }))
-            : clone(defaultConfig.benefits.items)
-        },
-        how: {
-          ...defaultConfig.how, ...value.how,
-          steps: Array.isArray(value.how?.steps)
-            ? defaultConfig.how.steps.map((step, index) => ({ ...step, ...value.how.steps[index] }))
-            : clone(defaultConfig.how.steps)
-        },
-        booking: { ...defaultConfig.booking, ...value.booking },
-        cta: { ...defaultConfig.cta, ...value.cta },
-        footer: { ...defaultConfig.footer, ...value.footer },
-        cars: Array.isArray(value.cars) ? value.cars : clone(defaultCars)
-      };
+      return normalizeSite(JSON.parse(saved));
     } catch (error) {
       console.error("Unable to read the saved website settings.", error);
       return clone(defaultConfig);
@@ -138,6 +141,7 @@
     defaultCars,
     defaultConfig,
     clone,
+    normalizeSite,
     readSite,
     saveSite,
     readBookings,

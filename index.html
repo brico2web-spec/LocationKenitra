@@ -320,7 +320,9 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="site-data.js"></script>
+  <script src="api-config.js"></script>
   <script>
+    const apiBaseUrl = String(window.KrayliaApiBaseUrl || "").replace(/\/+$/, "");
     let siteConfig = KrayliaStore.readSite();
     let cars = siteConfig.cars;
     const grid = document.getElementById("carGrid");
@@ -818,6 +820,23 @@
       if (event.key === "Escape" && imageLightbox.classList.contains("open")) closeCarImage();
     });
     setLanguage(currentLanguage);
+
+    async function loadPublishedSiteConfig() {
+      try {
+        const response = await fetch(`${apiBaseUrl}/api/site`, { cache: "no-store" });
+        if (!response.ok) throw new Error(`Shared settings request failed (${response.status}).`);
+        const result = await response.json();
+        if (!result.config) return;
+        siteConfig = KrayliaStore.normalizeSite(result.config);
+        cars = siteConfig.cars;
+        currentCarPage = 1;
+        setLanguage(currentLanguage);
+      } catch (error) {
+        console.error("Unable to load shared website settings. Showing the saved browser defaults.", error);
+      }
+    }
+
+    void loadPublishedSiteConfig();
   </script>
 </body>
 </html>

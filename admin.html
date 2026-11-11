@@ -262,7 +262,7 @@
         <div class="field"><label for="carFuel">الوقود</label><input class="input" id="carFuel" name="fuel" value="بنزين"></div>
         <div class="field"><label for="carTransmission">ناقل الحركة</label><input class="input" id="carTransmission" name="transmission" value="يدوية"></div>
         <div class="field"><label for="carBadge">شارة السيارة</label><input class="input" id="carBadge" name="badge" placeholder="اختيار ممتاز"></div>
-        <div class="field full"><label for="carImage">رابط صورة السيارة (اختياري)</label><input class="input" id="carImage" name="image" type="url" placeholder="https://example.com/car.jpg"><label for="carImageFile" style="margin-top:10px">أو رفع صورة من الجهاز</label><input class="input" id="carImageFile" type="file" accept="image/*"><small>الصور كتتصغر تلقائياً باش تتخزن فالمتصفح. الحد الأقصى لحجم الملف الأصلي 10 ميغابايت.</small><img class="car-upload-preview" id="carImagePreview" alt="معاينة صورة السيارة"></div>
+        <div class="field full"><label for="carImage">رابط صورة السيارة (اختياري)</label><input class="input" id="carImage" name="image" type="url" placeholder="https://example.com/car.jpg"><label for="carImageFile" style="margin-top:10px">أو رفع صورة من الجهاز إلى Cloudinary</label><input class="input" id="carImageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><small>الصورة كتتصغر قبل الرفع. خاص الاتصال بخادم الرفع، والحد الأقصى لحجم الملف الأصلي 10 ميغابايت.</small><img class="car-upload-preview" id="carImagePreview" alt="معاينة صورة السيارة"></div>
         <div class="field full"><label for="carAlt">وصف الصورة لقارئ الشاشة</label><input class="input" id="carAlt" name="alt" placeholder="سيارة عائلية مريحة"></div>
         <label class="field full" style="display:flex;align-items:center;gap:9px"><input type="checkbox" name="available" checked> متاحة للكراء وكتبان للزوار</label>
       </div><div class="modal-actions"><button class="btn" type="submit">حفظ السيارة</button><button class="btn btn-secondary" type="button" id="cancelVehicle">إلغاء</button></div></form>
@@ -271,53 +271,130 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="site-data.js"></script>
+  <script src="api-config.js"></script>
+  <script src="api-config.js"></script>
   <script>
-    const adminSessionKey = "kraylia-admin-demo-session";
+    const adminSessionKey = "kraylia-admin-session";
+    const apiBaseUrl = String(window.KrayliaApiBaseUrl || "").replace(/\/+$/, "");
     const adminLoginForm = document.getElementById("adminLoginForm");
     const adminLoginStatus = document.getElementById("adminLoginStatus");
+    let adminAccessToken = "";
+    let authAttempt = 0;
 
-    try {
-      if (sessionStorage.getItem(adminSessionKey) === "authenticated") {
-        document.body.classList.add("admin-authenticated");
+    async function requestAdminApi(path, options = {}) {
+      const headers = new Headers(options.headers || {});
+      if (options.body instanceof FormData) {
+        if (adminAccessToken) headers.set("Authorization", `Bearer ${adminAccessToken}`);
+      } else if (options.body && !headers.has("Content-Type")) {
+        headers.set("Content-Type", "application/json");
       }
-    } catch (error) {
-      adminLoginStatus.textContent = "تعذر الوصول إلى جلسة المتصفح. فعّل تخزين الجلسة ثم أعد المحاولة.";
+      if (adminAccessToken && !headers.has("Authorization")) {
+        headers.set("Authorization", `Bearer ${adminAccessToken}`);
+      }
+
+      const response = await fetch(`${apiBaseUrl}${path}`, { ...options, headers });
+      if (response.status === 204) return null;
+      const contentType = response.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        throw new Error(`خادم API رجع استجابة غير متوقعة (${response.status}). تحقق من رابط API.`);
+      }
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "تعذر إكمال الطلب.");
+      return result;
     }
 
-    adminLoginForm.addEventListener("submit", event => {
+    async function restoreAdminSession() {
+      let savedToken;
+      try {
+        savedToken = sessionStorage.getItem(adminSessionKey);
+      } catch (error) {
+        adminLoginStatus.textContent = "تعذر الوصول إلى جلسة المتصفح. فعّل تخزين الجلسة ثم أعد المحاولة.";
+        return;
+      }
+      if (!savedToken) return;
+
+      const attempt = authAttempt;
+      adminAccessToken = savedToken;
+      try {
+        await requestAdminApi("/api/auth/session");
+        if (attempt !== authAttempt) return;
+        document.body.classList.add("admin-authenticated");
+      } catch (error) {
+        if (attempt !== authAttempt) return;
+        adminAccessToken = "";
+        try {
+          sessionStorage.removeItem(adminSessionKey);
+        } catch (storageError) {
+          adminLoginStatus.textContent = "تعذر حذف جلسة الدخول المنتهية من المتصفح.";
+          return;
+        }
+        adminLoginStatus.textContent = error.message;
+      }
+    }
+
+    adminLoginForm.addEventListener("submit", async event => {
       event.preventDefault();
+      authAttempt += 1;
       const username = adminLoginForm.elements.username.value.trim();
       const password = adminLoginForm.elements.password.value;
-      if (username !== "Zamzam" || password !== "1463414634") {
-        adminLoginStatus.textContent = "اسم المستخدم أو كلمة المرور غير صحيحة.";
-        return;
-      }
-      try {
-        sessionStorage.setItem(adminSessionKey, "authenticated");
-      } catch (error) {
-        adminLoginStatus.textContent = "تعذر حفظ جلسة الدخول. فعّل تخزين الجلسة ثم أعد المحاولة.";
-        return;
-      }
+      const submitButton = adminLoginForm.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
       adminLoginStatus.textContent = "";
-      adminLoginForm.reset();
-      document.body.classList.add("admin-authenticated");
-      document.querySelector('[data-view="overview"]').focus();
+      try {
+        const result = await requestAdminApi("/api/auth/login", {
+          method: "POST",
+          body: JSON.stringify({ username, password })
+        });
+        if (typeof result.token !== "string" || !result.token) {
+          throw new Error("الخادم ما رجعش جلسة دخول صحيحة.");
+        }
+        adminAccessToken = result.token;
+        sessionStorage.setItem(adminSessionKey, adminAccessToken);
+        adminLoginStatus.textContent = "";
+        adminLoginForm.reset();
+        document.body.classList.add("admin-authenticated");
+        document.querySelector('[data-view="overview"]').focus();
+      } catch (error) {
+        adminAccessToken = "";
+        adminLoginStatus.textContent = error instanceof TypeError
+          ? "تعذر الاتصال بخادم الدخول. تحقق من رابط API وتشغيل الخادم."
+          : error.message;
+      } finally {
+        submitButton.disabled = false;
+      }
     });
 
-    document.getElementById("adminLogout").addEventListener("click", () => {
+    document.getElementById("adminLogout").addEventListener("click", async () => {
+      let logoutError;
+      try {
+        await requestAdminApi("/api/auth/logout", { method: "POST", keepalive: true });
+      } catch (error) {
+        logoutError = error;
+      }
       try {
         sessionStorage.removeItem(adminSessionKey);
       } catch (error) {
-        showToast("تعذر إنهاء جلسة الدخول.", true);
+        showToast("تعذر حذف جلسة الدخول من المتصفح.", true);
         return;
       }
+      adminAccessToken = "";
       document.body.classList.remove("admin-authenticated");
       document.getElementById("adminUsername").focus();
+      if (logoutError) showToast(logoutError.message, true);
     });
 
+    void restoreAdminSession();
+
     let config = KrayliaStore.readSite();
+    let lastSavedConfig = KrayliaStore.clone(config);
+    let siteConfigReady;
+    let siteSaveQueue = Promise.resolve();
+    let siteRevision = 0;
+    let sharedSiteLoaded = false;
     let bookings = KrayliaStore.readBookings();
-    let pendingVehicleImage = "";
+    let pendingVehicleImage = null;
+    let pendingUploadedImageUrl = "";
+    let pendingVehiclePreviewUrl = "";
     let existingVehicleImage = "";
     const views = {
       overview: ["الرئيسية", "نظرة عامة على الموقع والأسطول ديالك."],
@@ -410,16 +487,61 @@
       toastTimer = setTimeout(() => toast.classList.remove("show"), 2800);
     }
 
-    function persistConfig(message = "تحفظات التغييرات بنجاح.") {
+    async function loadSharedSiteConfig() {
       try {
-        KrayliaStore.saveSite(config);
+        const response = await fetch(`${apiBaseUrl}/api/site`, { cache: "no-store" });
+        const contentType = response.headers.get("content-type") || "";
+        if (!contentType.includes("application/json")) {
+          throw new Error(`رابط API ما رجعش بيانات الإعدادات المشتركة (${response.status}).`);
+        }
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "تعذر تحميل الإعدادات المشتركة.");
+        if (result.config) config = KrayliaStore.normalizeSite(result.config);
+        lastSavedConfig = KrayliaStore.clone(config);
+        sharedSiteLoaded = true;
+        document.getElementById("adminBrandName").textContent = config.brand.name;
+        updateDashboardBrandMark();
+        document.getElementById("avatar").textContent = [...config.brand.name][0] || "م";
+        renderSettings();
+        renderDashboard();
+      } catch (error) {
+        console.error("Unable to load the shared website settings.", error);
+        showToast(`تعذر تحميل الإعدادات المشتركة: ${error.message}`, true);
+      }
+    }
+
+    async function persistConfig(message = "تحفظات التغييرات بنجاح.") {
+      const revision = ++siteRevision;
+      const save = siteSaveQueue.then(async () => {
+        if (!siteConfigReady) throw new Error("إعدادات الموقع المشتركة مازال ما تحملاتش.");
+        await siteConfigReady;
+        if (!sharedSiteLoaded) throw new Error("تعذر تحميل الإعدادات المشتركة، ما تحفظ حتى تغيير.");
+        const snapshot = KrayliaStore.clone(config);
+        await requestAdminApi("/api/site", {
+          method: "PUT",
+          body: JSON.stringify(snapshot)
+        });
+        lastSavedConfig = snapshot;
+        return snapshot;
+      });
+      siteSaveQueue = save.catch(() => {});
+
+      try {
+        await save;
         document.getElementById("adminBrandName").textContent = config.brand.name;
         updateDashboardBrandMark();
         document.getElementById("avatar").textContent = [...config.brand.name][0] || "م";
         renderDashboard();
         showToast(message);
+        return true;
       } catch (error) {
+        if (revision === siteRevision) {
+          config = KrayliaStore.clone(lastSavedConfig);
+          renderSettings();
+          renderDashboard();
+        }
         showToast(error.message, true);
+        return false;
       }
     }
 
@@ -580,7 +702,7 @@
     function openVehicle(id = "") {
       const form = document.getElementById("vehicleForm");
       form.reset();
-      pendingVehicleImage = "";
+      clearPendingVehicleImage();
       const car = id ? config.cars.find(item => item.id === id) : null;
       existingVehicleImage = car?.image || "";
       document.getElementById("vehicleModalTitle").textContent = car ? "تعديل السيارة" : "زيد سيارة";
@@ -608,40 +730,80 @@
       document.getElementById("vehicleModal").classList.remove("open");
     }
 
-    function saveVehicle(event) {
+    function clearPendingVehicleImage() {
+      pendingVehicleImage = null;
+      pendingUploadedImageUrl = "";
+      if (pendingVehiclePreviewUrl) URL.revokeObjectURL(pendingVehiclePreviewUrl);
+      pendingVehiclePreviewUrl = "";
+    }
+
+    async function uploadVehicleImage(file) {
+      const body = new FormData();
+      body.append("image", file, "vehicle.jpg");
+      const result = await requestAdminApi("/api/upload", { method: "POST", body });
+      let uploadedUrl;
+      try {
+        uploadedUrl = new URL(result.secure_url);
+      } catch {
+        throw new Error("الخادم ما رجعش رابط صورة صالح.");
+      }
+      if (uploadedUrl.protocol !== "https:") {
+        throw new Error("خاص رابط الصورة اللي رجع من Cloudinary يكون آمناً (HTTPS).");
+      }
+      return result.secure_url;
+    }
+
+    async function saveVehicle(event) {
       event.preventDefault();
       const form = event.currentTarget;
       if (!form.reportValidity()) return;
       const data = Object.fromEntries(new FormData(form).entries());
-      const imageValue = pendingVehicleImage || data.image || existingVehicleImage;
-      let imageUrl;
-      if (imageValue.startsWith("data:image/jpeg;base64,")) {
-        imageUrl = { href: imageValue };
-      } else {
-        try {
-          imageUrl = new URL(imageValue);
-        } catch {
-          showToast("رفع صورة من الجهاز أو دخل رابط صورة صحيح.", true);
-          return;
+      const submitButton = form.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      try {
+        const imageValue = data.image || existingVehicleImage;
+        let imageHref;
+        if (pendingUploadedImageUrl) {
+          imageHref = pendingUploadedImageUrl;
+        } else if (pendingVehicleImage) {
+          pendingUploadedImageUrl = await uploadVehicleImage(pendingVehicleImage);
+          imageHref = pendingUploadedImageUrl;
+        } else if (imageValue.startsWith("data:image/")) {
+          const response = await fetch(imageValue);
+          if (!response.ok) throw new Error("ما قدرناش نقراو الصورة الحالية.");
+          const imageFile = await response.blob();
+          if (imageFile.size > 10 * 1024 * 1024) {
+            throw new Error("الصورة الحالية أكبر من الحد المسموح به (10 ميغابايت).");
+          }
+          imageHref = await uploadVehicleImage(imageFile);
+        } else {
+          try {
+            const imageUrl = new URL(imageValue);
+            if (!["https:", "http:"].includes(imageUrl.protocol)) throw new Error();
+            imageHref = imageUrl.href;
+          } catch {
+            throw new Error("رفع صورة من الجهاز أو دخل رابط صورة صحيح.");
+          }
         }
-        if (!["https:", "http:"].includes(imageUrl.protocol)) {
-          showToast("رابط الصورة خاصو يبدا بـ https:// أو http://.", true);
-          return;
-        }
+
+        const editing = Boolean(data.id);
+        const id = data.id || `car-${Date.now().toString(36)}`;
+        const car = {
+          id, name: data.name.trim(), category: data.category.trim(), city: data.city.trim(),
+          price: Number(data.price), rating: Number(data.rating || 0).toFixed(1), fuel: data.fuel.trim(),
+          transmission: data.transmission.trim(), seats: Number(data.seats || 5), badge: data.badge.trim(),
+          image: imageHref, alt: data.alt.trim() || `سيارة ${data.name.trim()}`, available: form.elements.available.checked
+        };
+        config.cars = editing ? config.cars.map(item => item.id === id ? car : item) : [...config.cars, car];
+        if (!await persistConfig(editing ? "تبدلات معلومات السيارة." : "تزادت السيارة للموقع.")) return;
+        closeVehicle();
+        clearPendingVehicleImage();
+        existingVehicleImage = "";
+      } catch (error) {
+        showToast(error.message, true);
+      } finally {
+        submitButton.disabled = false;
       }
-      const editing = Boolean(data.id);
-      const id = data.id || `car-${Date.now().toString(36)}`;
-      const car = {
-        id, name: data.name.trim(), category: data.category.trim(), city: data.city.trim(),
-        price: Number(data.price), rating: Number(data.rating || 0).toFixed(1), fuel: data.fuel.trim(),
-        transmission: data.transmission.trim(), seats: Number(data.seats || 5), badge: data.badge.trim(),
-        image: imageUrl.href, alt: data.alt.trim() || `سيارة ${data.name.trim()}`, available: form.elements.available.checked
-      };
-      config.cars = editing ? config.cars.map(item => item.id === id ? car : item) : [...config.cars, car];
-      closeVehicle();
-      pendingVehicleImage = "";
-      existingVehicleImage = "";
-      persistConfig(editing ? "تبدلات معلومات السيارة." : "تزادت السيارة للموقع.");
     }
 
     function deleteVehicle(id) {
@@ -719,7 +881,37 @@
     document.getElementById("cancelVehicle").addEventListener("click", closeVehicle);
     document.getElementById("vehicleModal").addEventListener("click", event => { if (event.target.id === "vehicleModal") closeVehicle(); });
     document.getElementById("vehicleForm").addEventListener("submit", saveVehicle);
-    document.getElementById("carImageFile").addEventListener("change", event => {
+    async function compressVehicleImage(file) {
+      const source = await createImageBitmap(file);
+      const scale = Math.min(1, 1200 / source.width, 900 / source.height);
+      let width = Math.max(1, Math.round(source.width * scale));
+      let height = Math.max(1, Math.round(source.height * scale));
+      const canvas = document.createElement("canvas");
+      let quality = 0.82;
+
+      try {
+        for (let attempt = 0; attempt < 12; attempt += 1) {
+          canvas.width = width;
+          canvas.height = height;
+          canvas.getContext("2d").drawImage(source, 0, 0, width, height);
+          const result = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", quality));
+          if (!result) throw new Error("ما قدرناش نوجد الصورة للرفع.");
+          if (result.size <= 300000) return result;
+          if (quality > 0.5) {
+            quality = Math.max(0.5, quality - 0.1);
+          } else {
+            width = Math.max(1, Math.round(width * 0.8));
+            height = Math.max(1, Math.round(height * 0.8));
+            quality = 0.72;
+          }
+        }
+      } finally {
+        source.close();
+      }
+      throw new Error("الصورة ما قدرناش نصغروها للحجم المناسب.");
+    }
+
+    document.getElementById("carImageFile").addEventListener("change", async event => {
       const file = event.target.files[0];
       if (!file) return;
       if (!file.type.startsWith("image/") || file.size > 10 * 1024 * 1024) {
@@ -727,52 +919,28 @@
         event.target.value = "";
         return;
       }
-      const reader = new FileReader();
-      reader.addEventListener("load", () => {
-        const source = new Image();
-        source.addEventListener("load", () => {
-          const scale = Math.min(1, 1200 / source.width, 900 / source.height);
-          const canvas = document.createElement("canvas");
-          canvas.width = Math.max(1, Math.round(source.width * scale));
-          canvas.height = Math.max(1, Math.round(source.height * scale));
-          canvas.getContext("2d").drawImage(source, 0, 0, canvas.width, canvas.height);
-          let quality = 0.82;
-          let result = canvas.toDataURL("image/jpeg", quality);
-          while (result.length > 300000 && (quality > 0.5 || canvas.width > 600 || canvas.height > 450)) {
-            if (quality > 0.5) {
-              quality -= 0.1;
-            } else {
-              const resized = document.createElement("canvas");
-              resized.width = Math.max(1, Math.round(canvas.width * 0.8));
-              resized.height = Math.max(1, Math.round(canvas.height * 0.8));
-              resized.getContext("2d").drawImage(canvas, 0, 0, resized.width, resized.height);
-              canvas.width = resized.width;
-              canvas.height = resized.height;
-              canvas.getContext("2d").drawImage(resized, 0, 0);
-              quality = 0.72;
-            }
-            result = canvas.toDataURL("image/jpeg", quality);
-          }
-          if (result.length > 300000) {
-            showToast("الصورة ما قدرناش نصغروها للحجم المناسب.", true);
-            return;
-          }
-          pendingVehicleImage = result;
-          document.getElementById("carImage").value = "";
-          const preview = document.getElementById("carImagePreview");
-          preview.src = result;
-          preview.classList.add("visible");
-        }, { once: true });
-        source.addEventListener("error", () => showToast("ما قدرناش نقراو الصورة.", true), { once: true });
-        source.src = String(reader.result);
-      }, { once: true });
-      reader.addEventListener("error", () => showToast("ما قدرناش نقراو الصورة.", true), { once: true });
-      reader.readAsDataURL(file);
+      const fileInput = event.currentTarget;
+      fileInput.disabled = true;
+      try {
+        const compressedImage = await compressVehicleImage(file);
+        clearPendingVehicleImage();
+        pendingVehicleImage = compressedImage;
+        document.getElementById("carImage").value = "";
+        pendingVehiclePreviewUrl = URL.createObjectURL(compressedImage);
+        const preview = document.getElementById("carImagePreview");
+        preview.src = pendingVehiclePreviewUrl;
+        preview.classList.add("visible");
+      } catch (error) {
+        showToast(error.message || "ما قدرناش نقراو الصورة.", true);
+        fileInput.value = "";
+      } finally {
+        fileInput.disabled = false;
+      }
     });
     document.getElementById("carImage").addEventListener("input", () => {
       existingVehicleImage = "";
       if (pendingVehicleImage) {
-        pendingVehicleImage = "";
+        clearPendingVehicleImage();
         document.getElementById("carImageFile").value = "";
       }
       const preview = document.getElementById("carImagePreview");
@@ -804,6 +972,7 @@
     document.documentElement.style.visibility = "";
     renderSettings();
     renderDashboard();
+    siteConfigReady = loadSharedSiteConfig();
   </script>
 </body>
 </html>
