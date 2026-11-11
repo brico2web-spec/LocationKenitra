@@ -29,6 +29,7 @@
     .link { display:block; margin:16px auto 0; border:0; background:none; color:var(--green); text-align:center; font-size:13px; font-weight:800; cursor:pointer; }
     .message { min-height:20px; margin:14px 0 0; color:var(--muted); font-size:13px; line-height:1.6; }
     .message.error { color:var(--red); }
+    .version { position:fixed; right:0; bottom:max(12px, env(safe-area-inset-bottom)); left:0; margin:0; color:var(--muted); text-align:center; font:500 11px "DM Sans",sans-serif; direction:ltr; }
     [hidden] { display:none !important; }
     @media(max-width:480px) { .card { padding:23px 19px; } }
   </style>
@@ -70,6 +71,7 @@
     </section>
     <p class="message" id="message" role="status" aria-live="polite"></p>
   </main>
+  <footer class="version">Version 1.0.0</footer>
   <script>
     const message = document.getElementById("message");
     const token = new URLSearchParams(location.search).get("reset");
@@ -93,12 +95,29 @@
     }
 
     async function sendForm(url, payload) {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      const result = await response.json();
+      const unavailableMessage = language === "fr"
+        ? "Le serveur d’administration ne répond pas. Démarrez le serveur Node.js du site, puis réessayez."
+        : "خادم الإدارة ما كيردش. شغّل خادم Node.js ديال الموقع وعاود المحاولة.";
+      let response;
+      try {
+        response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+      } catch {
+        throw new Error(unavailableMessage);
+      }
+      const contentType = response.headers.get("content-type") || "";
+      if (!contentType.toLowerCase().includes("application/json")) {
+        throw new Error(unavailableMessage);
+      }
+      let result;
+      try {
+        result = await response.json();
+      } catch {
+        throw new Error(unavailableMessage);
+      }
       if (!response.ok) throw new Error(result.error || "تعذر إكمال الطلب.");
       return result;
     }
