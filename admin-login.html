@@ -37,7 +37,7 @@
 <body>
   <main class="card">
     <div class="top">
-      <a class="brand" href="/"><span class="mark" aria-hidden="true">K</span><span>كراي ليا</span></a>
+      <a class="brand" href="index.html"><span class="mark" aria-hidden="true">K</span><span>كراي ليا</span></a>
       <button class="language" id="languageToggle" type="button">Français</button>
     </div>
     <section id="loginView">
@@ -52,35 +52,30 @@
     </section>
     <section id="recoveryView" hidden>
       <h1 data-ar="استرجاع كلمة المرور" data-fr="Récupération du mot de passe">استرجاع كلمة المرور</h1>
-      <p class="intro" data-ar="أكد اسم المستخدم وكلمة الاسترجاع. غادي نصيفطو رابط التغيير لبريد الحساب." data-fr="Confirmez votre identifiant et votre phrase de récupération. Un lien sera envoyé à l’adresse du compte.">أكد اسم المستخدم وكلمة الاسترجاع. غادي نصيفطو رابط التغيير لبريد الحساب.</p>
+      <p class="intro" data-ar="أكد اسم المستخدم وكلمة الاسترجاع، ومن بعد اختار كلمة مرور جديدة." data-fr="Confirmez votre identifiant et votre phrase de récupération, puis choisissez un nouveau mot de passe.">أكد اسم المستخدم وكلمة الاسترجاع، ومن بعد اختار كلمة مرور جديدة.</p>
       <form id="recoveryForm">
         <div class="field"><label for="recoveryUsername" data-ar="اسم المستخدم" data-fr="Nom d’utilisateur">اسم المستخدم</label><input id="recoveryUsername" name="username" autocomplete="username" required></div>
         <div class="field"><label for="recoveryWord" data-ar="كلمة الاسترجاع" data-fr="Phrase de récupération">كلمة الاسترجاع</label><input id="recoveryWord" name="recoveryWord" type="password" autocomplete="off" required></div>
-        <button class="submit" type="submit" data-ar="صيفط رابط التغيير للبريد" data-fr="Envoyer le lien de réinitialisation">صيفط رابط التغيير للبريد</button>
-      </form>
-      <button class="link" data-back-login type="button" data-ar="الرجوع لتسجيل الدخول" data-fr="Retour à la connexion">الرجوع لتسجيل الدخول</button>
-    </section>
-    <section id="resetView" hidden>
-      <h1 data-ar="اختار كلمة مرور جديدة" data-fr="Choisissez un nouveau mot de passe">اختار كلمة مرور جديدة</h1>
-      <p class="intro" data-ar="الرابط صالح لمدة 15 دقيقة ولمرة واحدة." data-fr="Le lien est valable 15 minutes et ne peut être utilisé qu’une seule fois.">الرابط صالح لمدة 15 دقيقة ولمرة واحدة.</p>
-      <form id="resetForm">
         <div class="field"><label for="newPassword" data-ar="كلمة المرور الجديدة (10 أحرف على الأقل)" data-fr="Nouveau mot de passe (10 caractères minimum)">كلمة المرور الجديدة (10 أحرف على الأقل)</label><input id="newPassword" name="password" type="password" autocomplete="new-password" minlength="10" maxlength="128" required></div>
         <div class="field"><label for="confirmPassword" data-ar="أكد كلمة المرور" data-fr="Confirmez le mot de passe">أكد كلمة المرور</label><input id="confirmPassword" name="confirmation" type="password" autocomplete="new-password" minlength="10" maxlength="128" required></div>
         <button class="submit" type="submit" data-ar="بدل كلمة المرور" data-fr="Réinitialiser le mot de passe">بدل كلمة المرور</button>
       </form>
+      <button class="link" data-back-login type="button" data-ar="الرجوع لتسجيل الدخول" data-fr="Retour à la connexion">الرجوع لتسجيل الدخول</button>
     </section>
     <p class="message" id="message" role="status" aria-live="polite"></p>
   </main>
   <footer class="version">Version 1.0.0</footer>
   <script>
     const message = document.getElementById("message");
-    const token = new URLSearchParams(location.search).get("reset");
+    const credentialsKey = "kraylia-admin-credentials";
+    const sessionKey = "kraylia-admin-authenticated";
+    const defaultCredentials = { username: "Zamzam", password: "1463414634" };
+    const recoveryPhrase = "Nezar";
     let language = "ar";
 
     function showView(name) {
       document.getElementById("loginView").hidden = name !== "login";
       document.getElementById("recoveryView").hidden = name !== "recovery";
-      document.getElementById("resetView").hidden = name !== "reset";
       message.textContent = "";
       message.classList.remove("error");
     }
@@ -94,42 +89,31 @@
       document.getElementById("languageToggle").textContent = next === "fr" ? "العربية" : "Français";
     }
 
-    async function sendForm(url, payload) {
-      const unavailableMessage = language === "fr"
-        ? "Le serveur d’administration ne répond pas. Démarrez le serveur Node.js du site, puis réessayez."
-        : "خادم الإدارة ما كيردش. شغّل خادم Node.js ديال الموقع وعاود المحاولة.";
-      let response;
+    function readCredentials() {
       try {
-        response = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-      } catch {
-        throw new Error(unavailableMessage);
+        const saved = JSON.parse(localStorage.getItem(credentialsKey) || "null");
+        if (saved && typeof saved.username === "string" && typeof saved.password === "string") return saved;
+      } catch (error) {
+        console.error("Could not read admin credentials from this browser.", error);
       }
-      const contentType = response.headers.get("content-type") || "";
-      if (!contentType.toLowerCase().includes("application/json")) {
-        throw new Error(unavailableMessage);
-      }
-      let result;
-      try {
-        result = await response.json();
-      } catch {
-        throw new Error(unavailableMessage);
-      }
-      if (!response.ok) throw new Error(result.error || "تعذر إكمال الطلب.");
-      return result;
+      return defaultCredentials;
     }
 
     document.getElementById("loginForm").addEventListener("submit", async event => {
       event.preventDefault();
       message.classList.remove("error");
       try {
-        await sendForm("/api/auth/login", Object.fromEntries(new FormData(event.currentTarget)));
-        location.replace("/admin.html");
+        const submitted = Object.fromEntries(new FormData(event.currentTarget));
+        const credentials = readCredentials();
+        if (submitted.username.trim().toLowerCase() !== credentials.username.toLowerCase() || submitted.password !== credentials.password) {
+          throw new Error(language === "fr" ? "Identifiant ou mot de passe incorrect." : "اسم المستخدم أو كلمة المرور غير صحيحة.");
+        }
+        localStorage.setItem(sessionKey, "1");
+        location.replace("admin.html");
       } catch (error) {
-        message.textContent = error.message;
+        message.textContent = error.name === "QuotaExceededError" || error.name === "SecurityError"
+          ? (language === "fr" ? "Le navigateur bloque le stockage local. Ouvrez le site depuis une adresse web." : "المتصفح مانع التخزين المحلي. حلّ الموقع من رابط ويب.")
+          : error.message;
         message.classList.add("error");
       }
     });
@@ -140,26 +124,22 @@
       event.preventDefault();
       message.classList.remove("error");
       try {
-        const result = await sendForm("/api/auth/recovery", Object.fromEntries(new FormData(event.currentTarget)));
-        message.textContent = result.message;
-      } catch (error) {
-        message.textContent = error.message;
-        message.classList.add("error");
-      }
-    });
-
-    document.getElementById("resetForm").addEventListener("submit", async event => {
-      event.preventDefault();
-      message.classList.remove("error");
-      try {
-        const result = await sendForm("/api/auth/reset", {
-          token,
-          password: document.getElementById("newPassword").value,
-          confirmation: document.getElementById("confirmPassword").value
-        });
+        const submitted = Object.fromEntries(new FormData(event.currentTarget));
+        const credentials = readCredentials();
+        if (submitted.username.trim().toLowerCase() !== credentials.username.toLowerCase() || submitted.recoveryWord.trim().toLowerCase() !== recoveryPhrase.toLowerCase()) {
+          throw new Error(language === "fr" ? "Informations de récupération incorrectes." : "معلومات الاسترجاع غير صحيحة.");
+        }
+        if (submitted.password.length < 10 || submitted.password.length > 128) {
+          throw new Error(language === "fr" ? "Le mot de passe doit contenir entre 10 et 128 caractères." : "كلمة المرور خاصها تكون بين 10 و128 حرف.");
+        }
+        if (submitted.password !== submitted.confirmation) {
+          throw new Error(language === "fr" ? "Les mots de passe ne correspondent pas." : "كلمتا المرور ما متطابقينش.");
+        }
+        credentials.password = submitted.password;
+        localStorage.setItem(credentialsKey, JSON.stringify(credentials));
+        localStorage.removeItem(sessionKey);
         showView("login");
-        message.textContent = result.message;
-        history.replaceState(null, "", "/admin-login.html");
+        message.textContent = language === "fr" ? "Mot de passe modifié. Vous pouvez vous connecter." : "تبدلات كلمة المرور. تقدر دابا تدخل.";
       } catch (error) {
         message.textContent = error.message;
         message.classList.add("error");
@@ -167,7 +147,6 @@
     });
 
     document.getElementById("languageToggle").addEventListener("click", () => setLanguage(language === "ar" ? "fr" : "ar"));
-    if (token) showView("reset");
   </script>
 </body>
 </html>
